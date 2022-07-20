@@ -32,7 +32,7 @@ public class TokenService
     {
         try
         {
-            String[] tokenParts     = token.split(".");
+            String[] tokenParts     = token.split("\\.");
             byte[]   dataPart       = tokenParts[1].getBytes();
             byte[]   decodedJwtData = Base64.getDecoder().decode(dataPart);
 
@@ -48,7 +48,7 @@ public class TokenService
     {
         try
         {
-            String[] tokenParts       = token.split(".");
+            String[] tokenParts       = token.split("\\.");
             byte[]   dataPart         = tokenParts[0].getBytes();
             byte[]   decodedJwtHeader = Base64.getDecoder().decode(dataPart);
 
