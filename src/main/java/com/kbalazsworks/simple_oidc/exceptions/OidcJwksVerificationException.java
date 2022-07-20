@@ -3,13 +3,13 @@ package com.kbalazsworks.simple_oidc.exceptions;
 import lombok.experimental.StandardException;
 
 @StandardException
-public class OidcException extends Exception
+public class OidcJwksVerificationException extends OidcException
 {
-    public OidcException()
+    public OidcJwksVerificationException()
     {
     }
 
-    public OidcException(String message)
+    public OidcJwksVerificationException(String message)
     {
         super(message);
     }
