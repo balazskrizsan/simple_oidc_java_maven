@@ -4,11 +4,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kbalazsworks.simple_oidc.entities.JwtData;
 import com.kbalazsworks.simple_oidc.entities.JwtHeader;
-import com.kbalazsworks.simple_oidc.exceptions.OidcException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcJwtParseException;
+import com.kbalazsworks.simple_oidc.exceptions.OidcKeyException;
 import lombok.extern.log4j.Log4j2;
-import lombok.val;
-import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
@@ -21,7 +19,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Base64;
 
-@Service
 @Log4j2
 public class TokenService
 {
@@ -60,7 +57,7 @@ public class TokenService
         }
     }
 
-    public PublicKey getPublicKey(String modulus, String exponent) throws OidcException
+    public PublicKey getPublicKey(String modulus, String exponent) throws OidcKeyException
     {
         try
         {
@@ -78,7 +75,7 @@ public class TokenService
         {
             log.error("Public key error: {}", e.getMessage());
 
-            throw new OidcException("Public key error");
+            throw new OidcKeyException("Public key error");
         }
     }
 

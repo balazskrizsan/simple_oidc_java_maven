@@ -1,22 +1,25 @@
 package com.kbalazsworks.simple_oidc.services;
 
-import com.kbalazsworks.simple_oidc.common.services.SystemFactory;
 import com.kbalazsworks.simple_oidc.entities.AccessTokenRawResponse;
 import com.kbalazsworks.simple_oidc.entities.BasicAuth;
 import com.kbalazsworks.simple_oidc.entities.IntrospectRawResponse;
 import com.kbalazsworks.simple_oidc.entities.JwksKeyItem;
 import com.kbalazsworks.simple_oidc.entities.JwksKeys;
 import com.kbalazsworks.simple_oidc.entities.OidcConfig;
-import com.kbalazsworks.simple_oidc.exceptions.OidcException;
+import com.kbalazsworks.simple_oidc.exceptions.OidcApiException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcExpiredTokenException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcJwksVerificationException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcJwtParseException;
+import com.kbalazsworks.simple_oidc.exceptions.OidcKeyException;
+import com.kbalazsworks.simple_oidc.exceptions.OidcScopeException;
+import com.kbalazsworks.simple_oidc.factories.OidcSystemFactory;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
-import org.springframework.util.LinkedMultiValueMap;
 
 import java.security.PublicKey;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,50 +27,55 @@ import java.util.stream.Collectors;
 @Log4j2
 public class OidcService implements IOidcService
 {
-    private final OidcConfig            oidcConfig;
-    private final TokenService          tokenService;
+    private final OidcConfig   oidcConfig;
+    private final TokenService tokenService;
     private final OidcHttpClientService oidcHttpClientService;
-    private final SystemFactory         systemFactory;
+    private final OidcSystemFactory     oidcSystemFactory;
 
-    public AccessTokenRawResponse callTokenEndpoint(
-        String clientId,
-        String clientSecret,
-        String scope,
-        String grantType
+    public @NonNull AccessTokenRawResponse callTokenEndpoint(
+        @NonNull String clientId,
+        @NonNull String clientSecret,
+        @NonNull String scope,
+        @NonNull String grantType
     )
+    throws OidcApiException
     {
-        return oidcHttpClientService.postWithMap(
+        return oidcHttpClientService.post(
             oidcConfig.getTokenEndpoint(),
-            new LinkedMultiValueMap<>()
+            new HashMap<>()
             {{
-                addAll("client_id", List.of(clientId));
-                addAll("client_secret", List.of(clientSecret));
-                addAll("scope", List.of(scope));
-                addAll("grant_type", List.of(grantType));
+                put("client_id", clientId);
+                put("client_secret", clientSecret);
+                put("scope", scope);
+                put("grant_type", grantType);
             }},
             AccessTokenRawResponse.class
         );
     }
 
-    public IntrospectRawResponse callIntrospectEndpoint(String accessToken, BasicAuth basicAuth)
+    public @NonNull IntrospectRawResponse callIntrospectEndpoint(
+        @NonNull String accessToken,
+        @NonNull BasicAuth basicAuth
+    ) throws OidcApiException
     {
-        return oidcHttpClientService.postWithMap(
+        return oidcHttpClientService.post(
             oidcConfig.getIntrospectionEndpoint(),
-            new LinkedMultiValueMap<>()
+            new HashMap<>()
             {{
-                addAll("token", List.of(accessToken));
+                put("token", accessToken);
             }},
             IntrospectRawResponse.class,
             basicAuth
         );
     }
 
-    public JwksKeys callJwksEndpoint()
+    public @NonNull JwksKeys callJwksEndpoint() throws OidcApiException
     {
-        return oidcHttpClientService.getWithMap(oidcConfig.getJwksUri(), JwksKeys.class);
+        return oidcHttpClientService.get(oidcConfig.getJwksUri(), JwksKeys.class);
     }
 
-    public void checkScopesInToken(String token, List<String> scopes) throws OidcException
+    public void checkScopesInToken(@NonNull String token, @NonNull List<String> scopes)
+    throws OidcScopeException, OidcJwtParseException, OidcExpiredTokenException, OidcJwksVerificationException
     {
         checkValidated(token);
 
@@ -80,7 +88,7 @@ public class OidcService implements IOidcService
 
         if (matchedScopes.isEmpty())
         {
-            throw new OidcException("Scope missing from token");
+            throw new OidcScopeException("Scope missing from token");
         }
     }
 
@@ -91,15 +99,7 @@ public class OidcService implements IOidcService
         checkJwksVerifiedToken(token);
     }
 
-    public Boolean isExpiredToken(String token) throws OidcJwtParseException
-    {
-        Integer expiration = tokenService.getJwtData(token).getExp();
-        long    now        = systemFactory.getCurrentTimeMillis() / 1000;
-
-        return expiration < now;
-    }
-
-    public void checkExpiredToken(String token) throws OidcExpiredTokenException, OidcJwtParseException
+    public void checkExpiredToken(@NonNull String token) throws OidcExpiredTokenException, OidcJwtParseException
     {
         if (isExpiredToken(token))
         {
@@ -107,21 +107,15 @@ public class OidcService implements IOidcService
         }
     }
 
-    public Boolean isJwksVerifiedToken(String token)
+    public @NonNull Boolean isExpiredToken(@NonNull String token) throws OidcJwtParseException
     {
-        try
-        {
-            return checkJwksVerifiedTokenLogic(token);
-        }
-        catch (Exception e)
-        {
-            log.error("JWKS verification failed: {}", e.getMessage());
+        Integer expiration = tokenService.getJwtData(token).getExp();
+        long    now        = oidcSystemFactory.getCurrentTimeMillis() / 1000;
 
-            return false;
-        }
+        return expiration < now;
     }
 
-    public void checkJwksVerifiedToken(String token) throws OidcJwksVerificationException
+    public void checkJwksVerifiedToken(@NonNull String token) throws OidcJwksVerificationException
     {
         Boolean isVerified;
         try
@@ -139,7 +133,8 @@ public class OidcService implements IOidcService
         }
     }
 
-    private Boolean checkJwksVerifiedTokenLogic(String token) throws OidcException
+    private @NonNull Boolean checkJwksVerifiedTokenLogic(@NonNull String token)
+    throws OidcApiException, OidcJwtParseException, OidcKeyException
     {
         String alg = tokenService.getJwtHeader(token).alg;
 
@@ -155,5 +150,19 @@ public class OidcService implements IOidcService
         val       signedData = tokenService.getSignedData(token);
 
         return tokenService.isVerified(publicKey, signedData, signature);
+    }
+
+    public @NonNull Boolean isJwksVerifiedToken(@NonNull String token)
+    {
+        try
+        {
+            return checkJwksVerifiedTokenLogic(token);
+        }
+        catch (Exception e)
+        {
+            log.error("JWKS verification failed: {}", e.getMessage());
+
+            return false;
+        }
     }
 }
