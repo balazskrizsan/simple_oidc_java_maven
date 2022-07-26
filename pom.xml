@@ -39,6 +39,12 @@
             <artifactId>log4j-core</artifactId>
             <version>2.18.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/io.activej/activej-inject -->
+        <dependency>
+            <groupId>io.activej</groupId>
+            <artifactId>activej-inject</artifactId>
+            <version>5.3</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
