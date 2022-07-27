@@ -27,16 +27,7 @@ public class OidcResponseValidatorService
     public IntrospectRawResponse introspectEndpointValidator(IntrospectRawResponse response)
     throws OidcApiException
     {
-        if (null == response.getActive()
-            || null == response.getIss()
-            || null == response.getNbf()
-            || null == response.getIat()
-            || null == response.getExp()
-            || response.getAud().isEmpty()
-            || null == response.getClientId()
-            || null == response.getJti()
-            || null == response.getScope()
-        )
+        if (null == response.getActive())
         {
             log.error("Token endpoint invalid response: {}", response);
 
