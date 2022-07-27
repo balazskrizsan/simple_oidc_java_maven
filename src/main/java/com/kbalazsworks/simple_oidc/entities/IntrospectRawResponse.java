@@ -18,7 +18,7 @@ import java.util.List;
 public class IntrospectRawResponse
 {
     @JsonProperty("active")
-    private final boolean      active;
+    private final Boolean      active;
     @JsonProperty("iss")
     private final String       iss;
     @JsonProperty("nbf")

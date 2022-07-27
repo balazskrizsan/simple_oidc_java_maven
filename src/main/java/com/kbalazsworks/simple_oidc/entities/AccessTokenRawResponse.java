@@ -16,11 +16,11 @@ import lombok.extern.jackson.Jacksonized;
 public class AccessTokenRawResponse
 {
     @JsonProperty("access_token")
-    private final String accessToken;
+    private final String  accessToken;
     @JsonProperty("expires_in")
-    private final Integer expires_in;
+    private final Integer expiresIn;
     @JsonProperty("token_type")
-    private final String tokenType;
+    private final String  tokenType;
     @JsonProperty("scope")
     private final String scope;
 }

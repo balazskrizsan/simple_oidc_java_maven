@@ -16,21 +16,21 @@ import com.kbalazsworks.simple_oidc.factories.OidcSystemFactory;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import lombok.val;
 
 import java.security.PublicKey;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Log4j2
 public class OidcService implements IOidcService
 {
-    private final OidcConfig   oidcConfig;
-    private final TokenService tokenService;
-    private final OidcHttpClientService oidcHttpClientService;
-    private final OidcSystemFactory     oidcSystemFactory;
+    private final OidcConfig                   oidcConfig;
+    private final TokenService                 tokenService;
+    private final OidcHttpClientService        oidcHttpClientService;
+    private final OidcSystemFactory            oidcSystemFactory;
+    private final OidcResponseValidatorService oidcResponseValidatorService;
 
     public @NonNull AccessTokenRawResponse callTokenEndpoint(
         @NonNull String clientId,
@@ -40,16 +40,17 @@ public class OidcService implements IOidcService
     )
     throws OidcApiException
     {
-        return oidcHttpClientService.post(
-            oidcConfig.getTokenEndpoint(),
-            new HashMap<>()
-            {{
-                put("client_id", clientId);
-                put("client_secret", clientSecret);
-                put("scope", scope);
-                put("grant_type", grantType);
-            }},
-            AccessTokenRawResponse.class
+        return oidcResponseValidatorService.tokenEndpointValidator(
+            oidcHttpClientService.post(
+                oidcConfig.getTokenEndpoint(),
+                Map.of(
+                    "client_id", clientId,
+                    "client_secret", clientSecret,
+                    "scope", scope,
+                    "grant_type", grantType
+                ),
+                AccessTokenRawResponse.class
+            )
         );
     }
 
@@ -58,20 +59,21 @@ public class OidcService implements IOidcService
         @NonNull BasicAuth basicAuth
     ) throws OidcApiException
     {
-        return oidcHttpClientService.post(
-            oidcConfig.getIntrospectionEndpoint(),
-            new HashMap<>()
-            {{
-                put("token", accessToken);
-            }},
-            IntrospectRawResponse.class,
-            basicAuth
+        return oidcResponseValidatorService.introspectEndpointValidator(
+            oidcHttpClientService.post(
+                oidcConfig.getIntrospectionEndpoint(),
+                Map.of("token", accessToken),
+                IntrospectRawResponse.class,
+                basicAuth
+            )
         );
     }
 
     public @NonNull JwksKeys callJwksEndpoint() throws OidcApiException
     {
-        return oidcHttpClientService.get(oidcConfig.getJwksUri(), JwksKeys.class);
+        return oidcResponseValidatorService.jwksEndpointValidator(
+            oidcHttpClientService.get(oidcConfig.getJwksUri(), JwksKeys.class)
+        );
     }
 
     public void checkScopesInToken(@NonNull String token, @NonNull List<String> scopes)
@@ -147,7 +149,7 @@ public class OidcService implements IOidcService
 
         PublicKey publicKey  = tokenService.getPublicKey(key.getN(), key.getE());
         byte[]    signature  = tokenService.getSignature(token);
-        val       signedData = tokenService.getSignedData(token);
+        byte[]    signedData = tokenService.getSignedData(token);
 
         return tokenService.isVerified(publicKey, signedData, signature);
     }
