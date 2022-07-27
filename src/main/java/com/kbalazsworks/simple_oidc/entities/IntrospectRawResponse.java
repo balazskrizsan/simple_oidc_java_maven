@@ -33,6 +33,6 @@ public class IntrospectRawResponse
     private final String       clientId;
     @JsonProperty("jti")
     private final String       jti;
-    @JsonProperty("active")
+    @JsonProperty("scope")
     private final String       scope;
 }
