@@ -8,6 +8,7 @@ import com.kbalazsworks.simple_oidc.exceptions.OidcJwtParseException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcKeyException;
 import lombok.extern.log4j.Log4j2;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -22,86 +23,120 @@ import java.util.Base64;
 @Log4j2
 public class TokenService
 {
-    private static ObjectMapper objectMapper = new ObjectMapper()
+    private static final ObjectMapper objectMapper = new ObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     public JwtData getJwtData(String token) throws OidcJwtParseException
     {
         try
         {
-            String[] tokenParts     = token.split("\\.");
-            byte[]   dataPart       = tokenParts[1].getBytes();
-            byte[]   decodedJwtData = Base64.getDecoder().decode(dataPart);
-
-            return objectMapper.readValue(decodedJwtData, JwtData.class);
+            return getJwtDataLogic(token);
         }
         catch (Exception e)
         {
-            throw new OidcJwtParseException(e.getMessage());
+            log.error("JWT Data parse error: {}", e.getMessage());
+
+            throw new OidcJwtParseException("JWT Data parse error");
         }
+    }
+
+    private JwtData getJwtDataLogic(String token) throws IOException
+    {
+        String[] tokenParts     = token.split("\\.");
+        byte[]   dataPart       = tokenParts[1].getBytes();
+        byte[]   decodedJwtData = Base64.getDecoder().decode(dataPart);
+
+        return objectMapper.readValue(decodedJwtData, JwtData.class);
     }
 
     public JwtHeader getJwtHeader(String token) throws OidcJwtParseException
     {
         try
         {
-            String[] tokenParts       = token.split("\\.");
-            byte[]   dataPart         = tokenParts[0].getBytes();
-            byte[]   decodedJwtHeader = Base64.getDecoder().decode(dataPart);
-
-            return objectMapper.readValue(decodedJwtHeader, JwtHeader.class);
+            return getJwtHeaderLogic(token);
         }
         catch (Exception e)
         {
-            throw new OidcJwtParseException(e.getMessage());
+            log.error("JWT Header parse error: {}", e.getMessage());
+
+            throw new OidcJwtParseException("JWT Header parse error");
         }
+    }
+
+    private JwtHeader getJwtHeaderLogic(String token) throws IOException, OidcJwtParseException
+    {
+        checkValidTokenFormat(token);
+
+        String[] tokenParts       = token.split("\\.");
+        byte[]   dataPart         = tokenParts[0].getBytes();
+        byte[]   decodedJwtHeader = Base64.getDecoder().decode(dataPart);
+
+        return objectMapper.readValue(decodedJwtHeader, JwtHeader.class);
     }
 
     public PublicKey getPublicKey(String modulus, String exponent) throws OidcKeyException
     {
         try
         {
-            var exponentB   = Base64.getUrlDecoder().decode(exponent);
-            var modulusB    = Base64.getUrlDecoder().decode(modulus);
-            var bigExponent = new BigInteger(1, exponentB);
-            var bigModulus  = new BigInteger(1, modulusB);
-            var publicKey = KeyFactory
-                .getInstance("RSA")
-                .generatePublic(new RSAPublicKeySpec(bigModulus, bigExponent));
-
-            return publicKey;
+            return getPublicKeyLogic(modulus, exponent);
         }
-        catch (IndexOutOfBoundsException | InvalidKeySpecException | NoSuchAlgorithmException e)
+        catch (IllegalArgumentException | InvalidKeySpecException | NoSuchAlgorithmException e)
         {
-            log.error("Public key error: {}", e.getMessage());
+            log.error("Public key generate error: {}", e.getMessage());
 
-            throw new OidcKeyException("Public key error");
+            throw new OidcKeyException("Public key generate error");
         }
+    }
+
+    private PublicKey getPublicKeyLogic(String modulus, String exponent)
+    throws NoSuchAlgorithmException, InvalidKeySpecException
+    {
+        Base64.Decoder decoder = Base64.getUrlDecoder();
+
+        byte[]     exponentB   = decoder.decode(exponent);
+        byte[]     modulusB    = decoder.decode(modulus);
+        BigInteger bigExponent = new BigInteger(1, exponentB);
+        BigInteger bigModulus  = new BigInteger(1, modulusB);
+
+        return KeyFactory.getInstance("RSA").generatePublic(new RSAPublicKeySpec(bigModulus, bigExponent));
     }
 
     public byte[] getSignature(String token) throws OidcJwtParseException
     {
         try
         {
-            String signatureB64u = token.substring(token.lastIndexOf(".") + 1);
-
-            return Base64.getUrlDecoder().decode(signatureB64u);
+            return getSignatureLogic(token);
         }
         catch (Exception e)
         {
-            throw new OidcJwtParseException(e.getMessage());
+            log.error("Signature parse error: {}", e.getMessage());
+
+            throw new OidcJwtParseException("Signature parse error");
         }
+    }
+
+    private byte[] getSignatureLogic(String token) throws OidcJwtParseException
+    {
+        checkValidTokenFormat(token);
+
+        String signatureB64u = token.substring(token.lastIndexOf(".") + 1);
+
+        return Base64.getUrlDecoder().decode(signatureB64u);
     }
 
     public byte[] getSignedData(String token) throws OidcJwtParseException
     {
         try
         {
+            checkValidTokenFormat(token);
+
             return token.substring(0, token.lastIndexOf(".")).getBytes();
         }
         catch (Exception e)
         {
-            throw new OidcJwtParseException(e.getMessage());
+            log.error("Signed data parse error: {}", e.getMessage());
+
+            throw new OidcJwtParseException("Signed data parse error");
         }
     }
 
@@ -109,17 +144,32 @@ public class TokenService
     {
         try
         {
-            Signature sig = Signature.getInstance("SHA256withRSA");
-            sig.initVerify(publicKey);
-            sig.update(signedData);
-
-            return sig.verify(signature);
+            return isVerifiedLogin(publicKey, signedData, signature);
         }
         catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e)
         {
             log.error("Publick key verification error: {}", e.getMessage());
 
             return false;
+        }
+    }
+
+    private Boolean isVerifiedLogin(PublicKey publicKey, byte[] signedData, byte[] signature)
+    throws NoSuchAlgorithmException, InvalidKeyException, SignatureException
+    {
+        Signature sig = Signature.getInstance("SHA256withRSA");
+        sig.initVerify(publicKey);
+        sig.update(signedData);
+
+        return sig.verify(signature);
+    }
+
+    private void checkValidTokenFormat(String token) throws OidcJwtParseException
+    {
+        int tokenLength = token.replaceAll("[^\\.]", "").length();
+        if (tokenLength != 2)
+        {
+            throw new OidcJwtParseException("Number of the points in token is: " + tokenLength);
         }
     }
 }
