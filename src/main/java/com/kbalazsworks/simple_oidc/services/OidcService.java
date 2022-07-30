@@ -90,7 +90,9 @@ public class OidcService implements IOidcService
 
         if (matchedScopes.isEmpty())
         {
-            throw new OidcScopeException("Scope missing from token");
+            log.error("No scope found in token: {}", scopes);
+
+            throw new OidcScopeException("No scope found in token");
         }
     }
 
@@ -105,7 +107,9 @@ public class OidcService implements IOidcService
     {
         if (isExpiredToken(token))
         {
-            throw new OidcExpiredTokenException();
+            log.error("Expired token");
+
+            throw new OidcExpiredTokenException("Expired token");
         }
     }
 
