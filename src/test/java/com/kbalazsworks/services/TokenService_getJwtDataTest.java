@@ -19,15 +19,16 @@ public class TokenService_getJwtDataTest extends AbstractTest
     {
         // Arrange
         String testedToken = getValidExpiredToken();
+
         JwtData expectedData = new JwtData(
             "https://localhost:5001",
-            1659100113,
-            1659100113,
-            1659103713,
+            1659130467,
+            1659130467,
+            1659134067,
             List.of("sj_aws", "https://localhost:5001/resources"),
             List.of("sj", "sj.aws.ec2.upload_company_logo", "sj.aws.ses.send_mail"),
             "sj.aws",
-            "84FC5DF245FCEF80EA7513A2872711D4"
+            "415F884B0FD8FAF27838475D251D8E95"
         );
 
         // Act

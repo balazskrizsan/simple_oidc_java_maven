@@ -17,7 +17,7 @@ public class TokenService_getSignatureTest extends AbstractTest
     {
         // Arrange
         String testedToken           = getValidExpiredToken();
-        String expectedSignatureHash = "[hex=3e2147b2c6d9c6b7963eaa587b75371820da1519a6839bf086f77a18947d7ab1]";
+        String expectedSignatureHash = "[hex=760a7db56407fed85b79fb140b9cc31f565b743c6ee3c902b9827682caced215]";
 
         // Act
         byte[] actual = getTokenService().getSignature(testedToken);
