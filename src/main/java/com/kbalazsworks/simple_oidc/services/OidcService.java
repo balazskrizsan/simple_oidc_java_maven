@@ -8,6 +8,7 @@ import com.kbalazsworks.simple_oidc.entities.JwksKeys;
 import com.kbalazsworks.simple_oidc.entities.OidcConfig;
 import com.kbalazsworks.simple_oidc.exceptions.OidcApiException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcExpiredTokenException;
+import com.kbalazsworks.simple_oidc.exceptions.OidcJwksException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcJwksVerificationException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcJwtParseException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcKeyException;
@@ -20,6 +21,7 @@ import lombok.extern.log4j.Log4j2;
 import java.security.PublicKey;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -139,36 +141,46 @@ public class OidcService implements IOidcService
         }
     }
 
-    private @NonNull Boolean checkJwksVerifiedTokenLogic(@NonNull String token)
-    throws OidcApiException, OidcJwtParseException, OidcKeyException
-    {
-        String alg = tokenService.getJwtHeader(token).alg;
-
-        final JwksKeyItem key = callJwksEndpoint()
-            .getKeys()
-            .stream()
-            .filter(k -> k.getAlg().equals(alg))
-            .findFirst()
-            .get();
-
-        PublicKey publicKey  = tokenService.getPublicKey(key.getN(), key.getE());
-        byte[]    signature  = tokenService.getSignature(token);
-        byte[]    signedData = tokenService.getSignedData(token);
-
-        return tokenService.isVerified(publicKey, signedData, signature);
-    }
-
     public @NonNull Boolean isJwksVerifiedToken(@NonNull String token)
     {
         try
         {
             return checkJwksVerifiedTokenLogic(token);
         }
+        // @todo: test
         catch (Exception e)
         {
             log.error("JWKS verification failed: {}", e.getMessage());
 
             return false;
         }
+    }
+
+    private @NonNull Boolean checkJwksVerifiedTokenLogic(@NonNull String token)
+    throws OidcApiException, OidcJwtParseException, OidcKeyException, OidcJwksException
+    {
+        String alg = tokenService.getJwtHeader(token).alg;
+
+        Optional<JwksKeyItem> optionalJwksKeyItem = callJwksEndpoint()
+            .getKeys()
+            .stream()
+            .filter(k -> k.getAlg().equals(alg))
+            .findFirst();
+
+        // @todo: add test
+        if (optionalJwksKeyItem.isEmpty())
+        {
+            log.error("Missing JWKS key for alg: {}", alg);
+
+            throw new OidcJwksException("Missing JWKS key for alg");
+        }
+
+        final JwksKeyItem key = optionalJwksKeyItem.get();
+
+        PublicKey publicKey  = tokenService.getPublicKey(key.getN(), key.getE());
+        byte[]    signature  = tokenService.getSignature(token);
+        byte[]    signedData = tokenService.getSignedData(token);
+
+        return tokenService.isVerified(publicKey, signedData, signature);
     }
 }
