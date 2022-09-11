@@ -53,9 +53,9 @@ abstract public class AbstractTest
         return new JwksKeyItem(
             "RSA",
             "sig",
-            "4B9CC612EBE61D72BE1B2CEE8DDAE495",
+            "BA4094AD81F3FD0D7CAA4009D192E23D",
             "AQAB",
-            "1CtIveaHoNVBda1TVSPWCE8owTaQ1-qSxkkLDqKsuIC_p0ND9RgWlU0fArIa4yGzVNWlHL30jdVUEPVbBltZWjjQe_EYeUN-PB8UivhjdtKC_A6hgB3PjfYnUgpg32hzlpCR2hw8sWZ_VNbsOGrSym8hJ7IgugNcFJ0wKG4KjxhxYWxhNyzwO6bMoF2rxyOouFZ0opeSfzSrZdAxOuuOgmbT1X7hl_k1xvsRRDJHrfu_YV10nMQksoPIXWLvy_XyLz3IuhnWi5mrK20UM3vTWRt6gUcRkTQuEzrPBPkKv5UW4R7aOWjzSbSJ0pqdF7J0aRlMpHXuioUhPZAmI8zZ5Q",
+            "32dTDGG3MLT_piNhmTDP_mwHITqG8B5SL1DRN2UzcQtiFGAstw0uib0CSG4OVFn3q4C2Nxia7EpyfaaVh5QkOW6nBPVPLA0uADWIp4y8gQ3TzVWxuDRc7mCWgDm9LWW67JkLrowcBx89Y84C__MtPPiSbYlFGLwkts-BeJQRfHOJnKj2T9647Vzwakqgy-sTJWZpqeFDWY1q8IW2vhqgssUOJSrWVmHcBN-xIucETo1BMhvIDCQkwK1llcXSb4HPEGyugS6BtFa_w2H1kH-RSiPStnVWd0FwkQpgqBQlCZseIx4X7aIiV6nR5lIj9SpXDG92zO3zL7cc8nLKeRcdxQ",
             "RS256"
         );
     }
