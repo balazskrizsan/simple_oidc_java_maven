@@ -3,7 +3,7 @@ package com.kbalazsworks.simple_oidc.services;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kbalazsworks.simple_oidc.entities.BasicAuth;
-import com.kbalazsworks.simple_oidc.exceptions.OidcApiException;;
+import com.kbalazsworks.simple_oidc.exceptions.OidcApiException;
 import com.kbalazsworks.simple_oidc.factories.IOkHttpFactory;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +32,17 @@ public class OidcHttpClientService
         return okHttpFactory.createOkHttpClient(); // @todo create bean
     }
 
+    // @todo: test
     public <T> @NonNull T get(@NonNull String url, @NonNull Class<T> mapperClass) throws OidcApiException
     {
-        return get(url, new HashMap<>(), mapperClass);
+        return get(url, new HashMap<>(), new HashMap<>(), mapperClass);
     }
 
+    // @todo: test
     public <T> @NonNull T get(
         @NonNull String url,
         @NonNull Map<String, String> queryParams,
+        @NonNull Map<String, String> headers,
         @NonNull Class<T> mapperClass
     )
     throws OidcApiException
@@ -51,8 +54,15 @@ public class OidcHttpClientService
             queryParams.forEach(urlBuilder::addQueryParameter);
         }
 
-        String  builtUrl = urlBuilder.build().toString();
-        Request request  = new Request.Builder().url(builtUrl).get().build();
+        String          builtUrl = urlBuilder.build().toString();
+        Request.Builder requestBuilder  = new Request.Builder().url(builtUrl).get();
+
+        if (headers.size() > 0)
+        {
+            headers.forEach(requestBuilder::addHeader);
+        }
+
+        Request request  = requestBuilder.build();
 
         try
         {
@@ -68,6 +78,7 @@ public class OidcHttpClientService
         }
     }
 
+    // @todo: test
     public <T> @NonNull T post(
         @NonNull String url,
         @NonNull Map<String, String> postData,
@@ -77,6 +88,7 @@ public class OidcHttpClientService
         return post(url, postData, mapperClass, null);
     }
 
+    // @todo: test
     public <T> T post(
         @NonNull String url,
         @NonNull Map<String, String> postData,

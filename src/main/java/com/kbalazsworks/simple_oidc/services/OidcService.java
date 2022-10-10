@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import java.security.PublicKey;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -182,5 +183,16 @@ public class OidcService implements IOidcService
         byte[]    signedData = tokenService.getSignedData(token);
 
         return tokenService.isVerified(publicKey, signedData, signature);
+    }
+
+    // @todo: test
+    public <T> @NonNull T callUserInfoEndpoint(String idToken, @NonNull Class<T> mapperClass) throws OidcApiException
+    {
+        return oidcHttpClientService.get(
+            oidcConfig.getUserinfoEndpoint(),
+            new HashMap<>(),
+            Map.of("Authorization", "Bearer " + idToken),
+            mapperClass
+        );
     }
 }
