@@ -42,4 +42,6 @@ public interface IOidcService
     void checkJwksVerifiedToken(@NonNull String token) throws OidcJwksVerificationException;
 
     @NonNull Boolean isJwksVerifiedToken(@NonNull String token);
+
+    public <T> @NonNull T callUserInfoEndpoint(String idToken, @NonNull Class<T> mapperClass) throws OidcApiException;
 }
