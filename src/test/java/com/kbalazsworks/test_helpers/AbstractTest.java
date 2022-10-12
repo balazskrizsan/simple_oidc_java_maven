@@ -2,6 +2,7 @@ package com.kbalazsworks.test_helpers;
 
 import com.kbalazsworks.simple_oidc.entities.AccessTokenRawResponse;
 import com.kbalazsworks.simple_oidc.entities.JwksKeyItem;
+import com.kbalazsworks.simple_oidc.entities.JwksKeys;
 import com.kbalazsworks.simple_oidc.entities.OidcConfig;
 import com.kbalazsworks.simple_oidc.factories.OidcSystemFactory;
 import com.kbalazsworks.simple_oidc.factories.OkHttpFactory;
@@ -16,6 +17,9 @@ import java.security.PublicKey;
 abstract public class AbstractTest
 {
     private static final String DISCOVERY_ENDPOINT = "/.well-known/openid-configuration";
+
+    protected final AccessTokenRawResponse LIVE_TOKEN = requestTokenFromIds();
+    protected final JwksKeys               LIVE_JWKS  = requestJwksFromIds();
 
     @SneakyThrows
     public OidcService getOidcService()
@@ -53,9 +57,9 @@ abstract public class AbstractTest
         return new JwksKeyItem(
             "RSA",
             "sig",
-            "BA4094AD81F3FD0D7CAA4009D192E23D",
+            "206129EFF13845D03992A25B514DF33D",
             "AQAB",
-            "32dTDGG3MLT_piNhmTDP_mwHITqG8B5SL1DRN2UzcQtiFGAstw0uib0CSG4OVFn3q4C2Nxia7EpyfaaVh5QkOW6nBPVPLA0uADWIp4y8gQ3TzVWxuDRc7mCWgDm9LWW67JkLrowcBx89Y84C__MtPPiSbYlFGLwkts-BeJQRfHOJnKj2T9647Vzwakqgy-sTJWZpqeFDWY1q8IW2vhqgssUOJSrWVmHcBN-xIucETo1BMhvIDCQkwK1llcXSb4HPEGyugS6BtFa_w2H1kH-RSiPStnVWd0FwkQpgqBQlCZseIx4X7aIiV6nR5lIj9SpXDG92zO3zL7cc8nLKeRcdxQ",
+            "txXJXF0geKMNyNkDtBbD8khj4FqKnabgoMVClm-Zd1hgzh5ftyU9DR814N7WztcCSlFe20GrASq5UDh0EfKolVgq7_ZsiABReQuGpNCflkTyUKWCHz0B27OBtwNX5IKpElw4piUwoxuj29i2xlh3NmqsnLnPQFkmXbomySLKxWJO2LRfCBq5-FTF8azCvQOerIhDZBX_9S1GgnqIQCgXnNK6gbg_J8_pmIt-NmtUuFT8y20Qm43AeXVKgAAVqBPdQbYWJ_zBu08DwioQ6IAjVUzfyLNnk25g-2ZY6dd0-RobjKWsNkv2AzbKmQfZ7ugEXPpqNuMyuYfSg_yMGs88nQ",
             "RS256"
         );
     }
@@ -93,12 +97,17 @@ abstract public class AbstractTest
     @SneakyThrows
     public AccessTokenRawResponse requestTokenFromIds()
     {
-        String testedClientId     = "sj.aws";
-        String testedClientSecret = "sj.aws.client.secret";
-        String testedScope        = "sj sj.aws.ses.send_mail sj.aws.ec2.upload_company_logo";
+        String testedClientId     = "client1_client_credentials";
+        String testedClientSecret = "client1_client_credentials_secret";
+        String testedScope        = "test_scope test_scope.a";
         String testedGrantType    = "client_credentials";
 
         return getOidcService().callTokenEndpoint(testedClientId, testedClientSecret, testedScope, testedGrantType);
+    }
+    @SneakyThrows
+    public JwksKeys requestJwksFromIds()
+    {
+        return getOidcService().callJwksEndpoint();
     }
 
     public String getInvalidToken()
@@ -112,7 +121,7 @@ abstract public class AbstractTest
     }
 
     @SneakyThrows
-    public PublicKey getValidPrivateKey()
+    public PublicKey getValidPublicKey()
     {
         JwksKeyItem jwksKeyItem = getJwksKeyItem();
 
@@ -122,13 +131,13 @@ abstract public class AbstractTest
     @SneakyThrows
     public byte[] getValidSignature()
     {
-        return getTokenService().getSignature(getValidExpiredToken());
+        return getTokenService().getSignature(LIVE_TOKEN.getAccessToken());
     }
 
     @SneakyThrows
     public byte[] getValidSignedData()
     {
-        return getTokenService().getSignedData(getValidExpiredToken());
+        return getTokenService().getSignedData(LIVE_TOKEN.getAccessToken());
     }
 }
 

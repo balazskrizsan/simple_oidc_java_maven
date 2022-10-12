@@ -20,14 +20,14 @@ public class OidcService_callIntrospectionEndpointTest extends AbstractTest
     {
         // Arrange
         AccessTokenRawResponse testedToken     = requestTokenFromIds();
-        BasicAuth              testedBasicAuth = new BasicAuth("sj_aws", "sj_aws_scopes");
+        BasicAuth              testedBasicAuth = new BasicAuth("test_resource_a", "test_resource_a_secret");
 
         Boolean      expectedActive    = true;
         String       expectedIss       = "https://localhost:5001";
         Integer      expectedExpiresIn = 3600;
-        List<String> expectedAud       = List.of("sj_aws", "https://localhost:5001/resources");
-        String       expectedClientId  = "sj.aws";
-        String       expectedScope     = "sj sj.aws.ec2.upload_company_logo sj.aws.ses.send_mail";
+        List<String> expectedAud       = List.of("test_resource_a", "https://localhost:5001/resources");
+        String       expectedClientId  = "client1_client_credentials";
+        String       expectedScope     = "test_scope test_scope.a";
 
         // Act
         IntrospectRawResponse actual = getOidcService()

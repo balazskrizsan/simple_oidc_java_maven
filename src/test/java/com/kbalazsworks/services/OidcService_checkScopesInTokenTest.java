@@ -21,7 +21,7 @@ public class OidcService_checkScopesInTokenTest extends AbstractTest
         AccessTokenRawResponse testedToken = requestTokenFromIds();
 
         // Act
-        getOidcService().checkScopesInToken(testedToken.getAccessToken(), List.of("sj"));
+        getOidcService().checkScopesInToken(testedToken.getAccessToken(), List.of("test_scope.a"));
 
         // Assert
         assertTrue(true);

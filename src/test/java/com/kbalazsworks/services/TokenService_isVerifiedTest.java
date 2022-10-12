@@ -15,7 +15,7 @@ public class TokenService_isVerifiedTest extends AbstractTest
     public void validKeyData_returnTrue()
     {
         // Arrange
-        PublicKey testedPublicKey  = getValidPrivateKey();
+        PublicKey testedPublicKey  = getValidPublicKey();
         byte[]    testedSignedData = getValidSignedData();
         byte[]    testedSignature  = getValidSignature();
 

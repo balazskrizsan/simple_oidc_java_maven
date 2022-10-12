@@ -21,16 +21,16 @@ public class OidcService_callTokenEndpointTest extends AbstractTest
         // Arrange
         String       expectedAlg         = "RS256";
         String       expectedTyp         = "at+jwt";
-        String       expectedClientId    = "sj.aws";
-        List<String> expectedScopeAsList = List.of("sj", "sj.aws.ec2.upload_company_logo", "sj.aws.ses.send_mail");
+        String       expectedClientId    = "client1_client_credentials";
+        List<String> expectedScopeAsList = List.of("test_scope", "test_scope.a");
         String       expectedIss         = "https://localhost:5001";
-        List<String> expectedAud         = List.of("sj_aws", "https://localhost:5001/resources");
+        List<String> expectedAud         = List.of("test_resource_a", "https://localhost:5001/resources");
         Integer      expectedExpiresIn   = 3600;
         String       expectedTokenType   = "Bearer";
-        String       expectedScope       = "sj sj.aws.ec2.upload_company_logo sj.aws.ses.send_mail";
+        String       expectedScope       = "test_scope test_scope.a";
 
         // Act
-        AccessTokenRawResponse actual = requestTokenFromIds();
+        AccessTokenRawResponse actual = LIVE_TOKEN;
 
         // Assert
         JwtData   jwtData   = getTokenService().getJwtData(actual.getAccessToken());

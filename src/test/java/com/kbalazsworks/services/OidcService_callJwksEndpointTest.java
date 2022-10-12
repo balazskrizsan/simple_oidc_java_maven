@@ -19,12 +19,12 @@ public class OidcService_callJwksEndpointTest extends AbstractTest
         JwksKeyItem jwksKeyItem = getJwksKeyItem();
 
         // Act
-        JwksKeys jwksKeys = getOidcService().callJwksEndpoint();
+        JwksKeys actual = getOidcService().callJwksEndpoint();
 
         // Assert
         assertAll(
-            () -> assertThat(jwksKeys.getKeys().size()).isEqualTo(1),
-            () -> assertThat(jwksKeys.getKeys().get(0)).usingRecursiveComparison().isEqualTo(jwksKeyItem)
+            () -> assertThat(actual.getKeys().size()).isEqualTo(1),
+            () -> assertThat(actual.getKeys().get(0)).usingRecursiveComparison().isEqualTo(jwksKeyItem)
         );
     }
 }
