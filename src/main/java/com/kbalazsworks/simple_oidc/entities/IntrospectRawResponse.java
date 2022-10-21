@@ -17,8 +17,6 @@ import java.util.List;
 @Getter
 public class IntrospectRawResponse
 {
-    @JsonProperty("active")
-    private final Boolean      active;
     @JsonProperty("iss")
     private final String       iss;
     @JsonProperty("nbf")
@@ -31,8 +29,20 @@ public class IntrospectRawResponse
     private final List<String> aud;
     @JsonProperty("client_id")
     private final String       clientId;
+    @JsonProperty("sub")
+    private final String       sub;
+    @JsonProperty("auth_time")
+    private final Integer      authTime;
+    @JsonProperty("idp")
+    private final String       idp;
+    @JsonProperty("amr")
+    private final String       amr;
+    @JsonProperty("sid")
+    private final String       sid;
     @JsonProperty("jti")
     private final String       jti;
+    @JsonProperty("active")
+    private final Boolean      active;
     @JsonProperty("scope")
     private final String       scope;
 }
