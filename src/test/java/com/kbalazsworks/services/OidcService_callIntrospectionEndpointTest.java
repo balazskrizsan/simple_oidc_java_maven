@@ -16,10 +16,10 @@ public class OidcService_callIntrospectionEndpointTest extends AbstractTest
 {
     @Test
     @SneakyThrows
-    public void callTokenEndpointWithValidParameters_returnsValidJwt()
+    public void callTokenEndpointWithValidJwtAccessToken_returnsValidJwt()
     {
         // Arrange
-        AccessTokenRawResponse testedToken     = requestTokenFromIds();
+        AccessTokenRawResponse testedToken     = requestJwtAccessTokenFromIds();
         BasicAuth              testedBasicAuth = new BasicAuth("test_resource_a", "test_resource_a_secret");
 
         Boolean      expectedActive    = true;

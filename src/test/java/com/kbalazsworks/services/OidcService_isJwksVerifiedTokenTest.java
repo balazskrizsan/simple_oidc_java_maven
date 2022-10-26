@@ -14,7 +14,7 @@ public class OidcService_isJwksVerifiedTokenTest extends AbstractTest
     public void freshNewToken_doesNothing()
     {
         // Arrange
-        AccessTokenRawResponse testedToken = requestTokenFromIds();
+        AccessTokenRawResponse testedToken = requestJwtAccessTokenFromIds();
 
         boolean expectedReponse = true;
 

@@ -18,7 +18,7 @@ public class OidcService_checkScopesInTokenTest extends AbstractTest
     public void availableScopeInTokenCheck_doesNothing()
     {
         // Arrange
-        AccessTokenRawResponse testedToken = requestTokenFromIds();
+        AccessTokenRawResponse testedToken = requestJwtAccessTokenFromIds();
 
         // Act
         getOidcService().checkScopesInToken(testedToken.getAccessToken(), List.of("test_scope.a"));
@@ -32,7 +32,7 @@ public class OidcService_checkScopesInTokenTest extends AbstractTest
     public void notAvailableScopeInTokenCheck_doesNothing()
     {
         // Arrange
-        AccessTokenRawResponse testedToken = requestTokenFromIds();
+        AccessTokenRawResponse testedToken = requestJwtAccessTokenFromIds();
 
         Class<OidcScopeException> exceptedException        = OidcScopeException.class;
         String                    expectedExceptionMessage = "No scope found in token";

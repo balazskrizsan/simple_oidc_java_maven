@@ -4,8 +4,10 @@ import com.kbalazsworks.simple_oidc.entities.AccessTokenRawResponse;
 import com.kbalazsworks.simple_oidc.entities.JwksKeyItem;
 import com.kbalazsworks.simple_oidc.entities.JwksKeys;
 import com.kbalazsworks.simple_oidc.entities.OidcConfig;
+import com.kbalazsworks.simple_oidc.exceptions.OidcApiException;
 import com.kbalazsworks.simple_oidc.factories.OidcSystemFactory;
 import com.kbalazsworks.simple_oidc.factories.OkHttpFactory;
+import com.kbalazsworks.simple_oidc.services.GrantStoreService;
 import com.kbalazsworks.simple_oidc.services.OidcHttpClientService;
 import com.kbalazsworks.simple_oidc.services.OidcResponseValidatorService;
 import com.kbalazsworks.simple_oidc.services.OidcService;
@@ -18,7 +20,7 @@ abstract public class AbstractTest
 {
     private static final String DISCOVERY_ENDPOINT = "/.well-known/openid-configuration";
 
-    protected final AccessTokenRawResponse LIVE_TOKEN = requestTokenFromIds();
+    protected final AccessTokenRawResponse LIVE_TOKEN = requestJwtAccessTokenFromIds();
     protected final JwksKeys               LIVE_JWKS  = requestJwksFromIds();
 
     @SneakyThrows
@@ -95,7 +97,7 @@ abstract public class AbstractTest
     }
 
     @SneakyThrows
-    public AccessTokenRawResponse requestTokenFromIds()
+    public AccessTokenRawResponse requestJwtAccessTokenFromIds()
     {
         String testedClientId     = "client1_client_credentials";
         String testedClientSecret = "client1_client_credentials_secret";

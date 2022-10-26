@@ -49,7 +49,7 @@ public class OidcService_checkExpiredTokenTest extends AbstractTest
     public void freshNewToken_doesNothing()
     {
         // Arrange
-        AccessTokenRawResponse testedToken = requestTokenFromIds();
+        AccessTokenRawResponse testedToken = requestJwtAccessTokenFromIds();
 
         // Act
         getOidcService().checkExpiredToken(testedToken.getAccessToken());

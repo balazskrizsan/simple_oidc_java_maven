@@ -1,7 +1,6 @@
 package com.kbalazsworks.services;
 
 import com.kbalazsworks.simple_oidc.entities.AccessTokenRawResponse;
-import com.kbalazsworks.simple_oidc.exceptions.OidcExpiredTokenException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcJwtParseException;
 import com.kbalazsworks.test_helpers.AbstractTest;
 import lombok.SneakyThrows;
@@ -49,7 +48,7 @@ public class OidcService_isExpiredTokenTest extends AbstractTest
     public void freshNewToken_returnsFalse()
     {
         // Arrange
-        AccessTokenRawResponse testedToken = requestTokenFromIds();
+        AccessTokenRawResponse testedToken = requestJwtAccessTokenFromIds();
 
         boolean expectedResponse = false;
 
