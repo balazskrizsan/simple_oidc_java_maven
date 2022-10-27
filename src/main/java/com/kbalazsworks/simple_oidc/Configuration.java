@@ -4,6 +4,7 @@ import com.kbalazsworks.simple_oidc.entities.OidcConfig;
 import com.kbalazsworks.simple_oidc.exceptions.OidcApiException;
 import com.kbalazsworks.simple_oidc.factories.OidcSystemFactory;
 import com.kbalazsworks.simple_oidc.factories.OkHttpFactory;
+import com.kbalazsworks.simple_oidc.services.GrantStoreService;
 import com.kbalazsworks.simple_oidc.services.OidcHttpClientService;
 import com.kbalazsworks.simple_oidc.services.OidcResponseValidatorService;
 import com.kbalazsworks.simple_oidc.services.OidcService;
@@ -32,7 +33,8 @@ public class Configuration
                     new TokenService(),
                     oidcHttpClientService,
                     new OidcSystemFactory(),
-                    new OidcResponseValidatorService()
+                    new OidcResponseValidatorService(),
+                    new GrantStoreService()
                 );
             }
         };

@@ -36,7 +36,8 @@ abstract public class AbstractTest
             new TokenService(),
             oidcHttpClientService,
             new OidcSystemFactory(),
-            new OidcResponseValidatorService()
+            new OidcResponseValidatorService(),
+            new GrantStoreService()
         );
     }
 

@@ -6,6 +6,9 @@ import com.kbalazsworks.simple_oidc.entities.IntrospectRawResponse;
 import com.kbalazsworks.simple_oidc.entities.JwksKeyItem;
 import com.kbalazsworks.simple_oidc.entities.JwksKeys;
 import com.kbalazsworks.simple_oidc.entities.OidcConfig;
+import com.kbalazsworks.simple_oidc.entities.grant_type.ClientCredentials;
+import com.kbalazsworks.simple_oidc.enums.GrantTypesEnum;
+import com.kbalazsworks.simple_oidc.exceptions.GrantStoreException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcApiException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcExpiredTokenException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcJwksException;
@@ -34,6 +37,27 @@ public class OidcService implements IOidcService
     private final OidcHttpClientService        oidcHttpClientService;
     private final OidcSystemFactory            oidcSystemFactory;
     private final OidcResponseValidatorService oidcResponseValidatorService;
+    private final GrantStoreService            grantStoreService;
+
+    public GrantStoreService getGrantStore()
+    {
+        return grantStoreService;
+    }
+
+    public @NonNull AccessTokenRawResponse callTokenEndpoint(
+        @NonNull GrantTypesEnum grantType,
+        @NonNull String key
+    ) throws GrantStoreException, OidcApiException
+    {
+        ClientCredentials clientCredential = grantStoreService.getGrantTypeEntity(grantType, key);
+
+        return callTokenEndpoint(
+            clientCredential.getClientId(),
+            clientCredential.getClientSecret(),
+            clientCredential.getScopeAsString(),
+            clientCredential.getGrantType()
+        );
+    }
 
     public @NonNull AccessTokenRawResponse callTokenEndpoint(
         @NonNull String clientId,
