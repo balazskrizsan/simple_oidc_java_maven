@@ -22,6 +22,8 @@ public interface IOidcService
         @NonNull String grantType
     ) throws OidcApiException;
 
+    GrantStoreService getGrantStoreService();
+
     @NonNull IntrospectRawResponse callIntrospectEndpoint(
         @NonNull String accessToken,
         @NonNull BasicAuth basicAuth
