@@ -39,7 +39,7 @@ public class OidcService implements IOidcService
     private final OidcResponseValidatorService oidcResponseValidatorService;
     private final GrantStoreService            grantStoreService;
 
-    public GrantStoreService getGrantStore()
+    public GrantStoreService getGrantStoreService()
     {
         return grantStoreService;
     }
@@ -49,7 +49,7 @@ public class OidcService implements IOidcService
         @NonNull String key
     ) throws GrantStoreException, OidcApiException
     {
-        ClientCredentials clientCredential = grantStoreService.getGrantTypeEntity(grantType, key);
+        ClientCredentials clientCredential = grantStoreService.getGrant(grantType, key);
 
         return callTokenEndpoint(
             clientCredential.getClientId(),

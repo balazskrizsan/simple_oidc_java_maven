@@ -8,6 +8,7 @@ import lombok.NonNull;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class GrantStoreService
 {
@@ -28,25 +29,18 @@ public class GrantStoreService
     }
 
     // @todo: test
-    public <T> @NonNull T getGrantTypeEntity(@NonNull GrantTypesEnum grantType, @NonNull String key)
+    public <T> @NonNull T getGrant(@NonNull GrantTypesEnum grantType, @NonNull String key)
     throws GrantStoreException
     {
         if (grantType.name().equals(GrantTypesEnum.ClientCredentials.name()))
         {
-            T grant = (T) clientCredentialsState.get(key);
-
-            if (null == grant)
-            {
-                throw new GrantStoreException("Grant not found");
-            }
-
-            return (T) clientCredentialsState.get(key);
+            return Objects.requireNonNull((T) clientCredentialsState.get(key), "Grant not found: " + key);
         }
 
         throw new GrantStoreException("GrantType not found");
     }
 
-    public void setGrantsToImmutable()
+    public void protectStore()
     {
         clientCredentialsState = Collections.unmodifiableMap(clientCredentialsState);
     }

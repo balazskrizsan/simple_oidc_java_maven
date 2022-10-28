@@ -71,7 +71,7 @@ public class OidcService_callTokenEndpointTest extends AbstractTest
 
         OidcService oidcService = getOidcService();
 
-        GrantStoreService grantStoreService = oidcService.getGrantStore();
+        GrantStoreService grantStoreService = oidcService.getGrantStoreService();
         grantStoreService.addGrant(
             GrantTypesEnum.ClientCredentials,
             "test1",
@@ -81,7 +81,7 @@ public class OidcService_callTokenEndpointTest extends AbstractTest
                 List.of("test_scope", "test_scope.a")
             )
         );
-        grantStoreService.setGrantsToImmutable();
+        grantStoreService.protectStore();
 
         // Act
         AccessTokenRawResponse actual = oidcService.callTokenEndpoint(GrantTypesEnum.ClientCredentials, "test1");
