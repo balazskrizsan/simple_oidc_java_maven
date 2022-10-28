@@ -14,7 +14,6 @@ public class GrantStoreService
 {
     private Map<String, ClientCredentials> clientCredentialsState = new HashMap<>();
 
-    // @todo: test
     public <T> void addGrant(@NonNull GrantTypesEnum grantType, @NonNull String key, @NonNull T grant)
     throws GrantStoreException
     {
@@ -28,7 +27,6 @@ public class GrantStoreService
         throw new GrantStoreException("GrantType not found");
     }
 
-    // @todo: test
     public <T> @NonNull T getGrant(@NonNull GrantTypesEnum grantType, @NonNull String key)
     throws GrantStoreException
     {
