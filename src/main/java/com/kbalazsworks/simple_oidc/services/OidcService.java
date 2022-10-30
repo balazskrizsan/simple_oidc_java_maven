@@ -39,7 +39,7 @@ public class OidcService implements IOidcService
     private final OidcResponseValidatorService oidcResponseValidatorService;
     private final GrantStoreService            grantStoreService;
 
-    public GrantStoreService getGrantStoreService()
+    public @NonNull GrantStoreService getGrantStoreService()
     {
         return grantStoreService;
     }
