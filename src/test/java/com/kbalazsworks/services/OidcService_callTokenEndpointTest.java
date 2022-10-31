@@ -4,7 +4,6 @@ import com.kbalazsworks.simple_oidc.entities.AccessTokenRawResponse;
 import com.kbalazsworks.simple_oidc.entities.JwtData;
 import com.kbalazsworks.simple_oidc.entities.JwtHeader;
 import com.kbalazsworks.simple_oidc.entities.grant_type.ClientCredentials;
-import com.kbalazsworks.simple_oidc.enums.GrantTypesEnum;
 import com.kbalazsworks.simple_oidc.services.GrantStoreService;
 import com.kbalazsworks.simple_oidc.services.OidcService;
 import com.kbalazsworks.test_helpers.AbstractTest;
@@ -72,19 +71,15 @@ public class OidcService_callTokenEndpointTest extends AbstractTest
         OidcService oidcService = getOidcService();
 
         GrantStoreService grantStoreService = oidcService.getGrantStoreService();
-        grantStoreService.addGrant(
-            GrantTypesEnum.ClientCredentials,
-            "test1",
-            new ClientCredentials(
-                "client1_client_credentials",
-                "client1_client_credentials_secret",
-                List.of("test_scope", "test_scope.a")
-            )
-        );
+        grantStoreService.addGrant("test1", new ClientCredentials(
+            "client1_client_credentials",
+            "client1_client_credentials_secret",
+            List.of("test_scope", "test_scope.a")
+        ));
         grantStoreService.protectStore();
 
         // Act
-        AccessTokenRawResponse actual = oidcService.callTokenEndpoint(GrantTypesEnum.ClientCredentials, "test1");
+        AccessTokenRawResponse actual = oidcService.callTokenEndpoint("test1");
 
         // Assert
         JwtData   jwtData   = getTokenService().getJwtData(actual.getAccessToken());

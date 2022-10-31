@@ -4,7 +4,6 @@ import com.kbalazsworks.simple_oidc.entities.AccessTokenRawResponse;
 import com.kbalazsworks.simple_oidc.entities.BasicAuth;
 import com.kbalazsworks.simple_oidc.entities.IntrospectRawResponse;
 import com.kbalazsworks.simple_oidc.entities.JwksKeys;
-import com.kbalazsworks.simple_oidc.enums.GrantTypesEnum;
 import com.kbalazsworks.simple_oidc.exceptions.GrantStoreException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcApiException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcExpiredTokenException;
@@ -26,7 +25,7 @@ public interface IOidcService
 
     @NonNull GrantStoreService getGrantStoreService();
 
-    @NonNull AccessTokenRawResponse callTokenEndpoint(@NonNull GrantTypesEnum grantType, @NonNull String key)
+    @NonNull AccessTokenRawResponse callTokenEndpoint(@NonNull String key)
     throws GrantStoreException, OidcApiException;
 
     @NonNull IntrospectRawResponse callIntrospectEndpoint(@NonNull String accessToken, @NonNull BasicAuth basicAuth)

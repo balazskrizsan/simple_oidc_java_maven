@@ -1,7 +1,6 @@
 package com.kbalazsworks.simple_oidc.services;
 
 import com.kbalazsworks.simple_oidc.entities.grant_type.ClientCredentials;
-import com.kbalazsworks.simple_oidc.enums.GrantTypesEnum;
 import com.kbalazsworks.simple_oidc.exceptions.GrantStoreException;
 import lombok.NonNull;
 
@@ -14,10 +13,10 @@ public class GrantStoreService
 {
     private Map<String, ClientCredentials> clientCredentialsState = new HashMap<>();
 
-    public <T> void addGrant(@NonNull GrantTypesEnum grantType, @NonNull String key, @NonNull T grant)
+    public <T> void addGrant(@NonNull String key, @NonNull T grant)
     throws GrantStoreException
     {
-        if (grantType.name().equals(GrantTypesEnum.ClientCredentials.name()))
+        if (grant instanceof ClientCredentials)
         {
             clientCredentialsState.put(key, (ClientCredentials) grant);
 
@@ -27,10 +26,10 @@ public class GrantStoreService
         throw new GrantStoreException("GrantType not found");
     }
 
-    public <T> @NonNull T getGrant(@NonNull GrantTypesEnum grantType, @NonNull String key)
+    public <T> @NonNull T getGrant(@NonNull String key, @NonNull Class<T> returnType)
     throws GrantStoreException
     {
-        if (grantType.name().equals(GrantTypesEnum.ClientCredentials.name()))
+        if (returnType == ClientCredentials.class)
         {
             return Objects.requireNonNull((T) clientCredentialsState.get(key), "Grant not found: " + key);
         }

@@ -7,7 +7,6 @@ import com.kbalazsworks.simple_oidc.entities.JwksKeyItem;
 import com.kbalazsworks.simple_oidc.entities.JwksKeys;
 import com.kbalazsworks.simple_oidc.entities.OidcConfig;
 import com.kbalazsworks.simple_oidc.entities.grant_type.ClientCredentials;
-import com.kbalazsworks.simple_oidc.enums.GrantTypesEnum;
 import com.kbalazsworks.simple_oidc.exceptions.GrantStoreException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcApiException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcExpiredTokenException;
@@ -44,12 +43,10 @@ public class OidcService implements IOidcService
         return grantStoreService;
     }
 
-    public @NonNull AccessTokenRawResponse callTokenEndpoint(
-        @NonNull GrantTypesEnum grantType,
-        @NonNull String key
-    ) throws GrantStoreException, OidcApiException
+    public @NonNull AccessTokenRawResponse callTokenEndpoint(@NonNull String key)
+    throws GrantStoreException, OidcApiException
     {
-        ClientCredentials clientCredential = grantStoreService.getGrant(grantType, key);
+        ClientCredentials clientCredential = grantStoreService.getGrant(key, ClientCredentials.class);
 
         return callTokenEndpoint(
             clientCredential.getClientId(),

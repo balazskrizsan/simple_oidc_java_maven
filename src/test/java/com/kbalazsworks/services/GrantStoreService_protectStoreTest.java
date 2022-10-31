@@ -1,7 +1,6 @@
 package com.kbalazsworks.services;
 
 import com.kbalazsworks.simple_oidc.entities.grant_type.ClientCredentials;
-import com.kbalazsworks.simple_oidc.enums.GrantTypesEnum;
 import com.kbalazsworks.simple_oidc.services.GrantStoreService;
 import com.kbalazsworks.test_helpers.AbstractTest;
 import lombok.SneakyThrows;
@@ -25,7 +24,7 @@ public class GrantStoreService_protectStoreTest extends AbstractTest
 
         // Act / Assert
         assertThatThrownBy(
-            () -> grantStoreService.addGrant(GrantTypesEnum.ClientCredentials, testedGrantKey, testedGrant)
+            () -> grantStoreService.addGrant(testedGrantKey, testedGrant)
         ).isInstanceOf(UnsupportedOperationException.class);
     }
 }
