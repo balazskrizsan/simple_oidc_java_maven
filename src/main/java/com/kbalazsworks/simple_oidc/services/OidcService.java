@@ -73,6 +73,7 @@ public class OidcService implements IOidcService
     public @NonNull AccessTokenRawResponse callTokenEndpoint(@NonNull String key)
     throws GrantStoreException, OidcApiException
     {
+        log.info("Call token endpoint with key: {}", key);
         ClientCredentials clientCredential = grantStoreService.getGrant(key, ClientCredentials.class);
 
         return callTokenEndpoint(
@@ -91,6 +92,8 @@ public class OidcService implements IOidcService
     )
     throws OidcApiException
     {
+        log.info("Call token endpoint with ClientId: {}", clientId);
+
         return oidcResponseValidatorService.tokenEndpointValidator(
             getOidcHttpClientService().post(
                 getOidcConfig().getTokenEndpoint(),
@@ -110,6 +113,8 @@ public class OidcService implements IOidcService
         @NonNull BasicAuth basicAuth
     ) throws OidcApiException
     {
+        log.info("Call introspection endpoint");
+
         return oidcResponseValidatorService.introspectEndpointValidator(
             getOidcHttpClientService().post(
                 getOidcConfig().getIntrospectionEndpoint(),
@@ -122,6 +127,8 @@ public class OidcService implements IOidcService
 
     public @NonNull JwksKeys callJwksEndpoint() throws OidcApiException
     {
+        log.info("Call JWKS endpoint");
+
         return oidcResponseValidatorService.jwksEndpointValidator(
             getOidcHttpClientService().get(getOidcConfig().getJwksUri(), JwksKeys.class)
         );
@@ -130,6 +137,8 @@ public class OidcService implements IOidcService
     public void checkScopesInToken(@NonNull String token, @NonNull List<String> scopes)
     throws OidcScopeException, OidcJwtParseException, OidcExpiredTokenException, OidcJwksVerificationException
     {
+        log.info("Check scopes in token: {}", scopes);
+
         checkValidated(token);
 
         List<String> matchedScopes = tokenService
@@ -150,12 +159,16 @@ public class OidcService implements IOidcService
     public void checkValidated(String token)
     throws OidcExpiredTokenException, OidcJwksVerificationException, OidcJwtParseException
     {
+        log.info("Check validated token");
+
         checkExpiredToken(token);
         checkJwksVerifiedToken(token);
     }
 
     public void checkExpiredToken(@NonNull String token) throws OidcExpiredTokenException, OidcJwtParseException
     {
+        log.info("Check expired token");
+
         if (isExpiredToken(token))
         {
             log.error("Expired token");
@@ -236,6 +249,8 @@ public class OidcService implements IOidcService
     // @todo: test
     public <T> @NonNull T callUserInfoEndpoint(String idToken, @NonNull Class<T> mapperClass) throws OidcApiException
     {
+        log.info("Call User Info endpoint");
+
         return getOidcHttpClientService().get(
             getOidcConfig().getUserinfoEndpoint(),
             new HashMap<>(),
