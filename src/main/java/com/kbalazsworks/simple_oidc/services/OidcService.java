@@ -16,6 +16,7 @@ import com.kbalazsworks.simple_oidc.exceptions.OidcJwtParseException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcKeyException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcScopeException;
 import com.kbalazsworks.simple_oidc.factories.OidcSystemFactory;
+import com.kbalazsworks.simple_oidc.factories.OkHttpFactory;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -31,16 +32,42 @@ import java.util.stream.Collectors;
 @Log4j2
 public class OidcService implements IOidcService
 {
-    private final OidcConfig                   oidcConfig;
+    private final String                       host;
+    private final String                       discoverEndpoint;
     private final TokenService                 tokenService;
-    private final OidcHttpClientService        oidcHttpClientService;
     private final OidcSystemFactory            oidcSystemFactory;
     private final OidcResponseValidatorService oidcResponseValidatorService;
     private final GrantStoreService            grantStoreService;
 
+    private OidcConfig            oidcConfig            = null;
+    private OidcHttpClientService oidcHttpClientService = null;
+
     public @NonNull GrantStoreService getGrantStoreService()
     {
         return grantStoreService;
+    }
+
+    private void init() throws OidcApiException
+    {
+        if (null == oidcHttpClientService || null == oidcConfig)
+        {
+            oidcHttpClientService = new OidcHttpClientService(new OkHttpFactory());
+            oidcConfig            = oidcHttpClientService.get(host + discoverEndpoint, OidcConfig.class);
+        }
+    }
+
+    private OidcHttpClientService getOidcHttpClientService() throws OidcApiException
+    {
+        init();
+
+        return oidcHttpClientService;
+    }
+
+    private OidcConfig getOidcConfig() throws OidcApiException
+    {
+        init();
+
+        return oidcConfig;
     }
 
     public @NonNull AccessTokenRawResponse callTokenEndpoint(@NonNull String key)
@@ -65,8 +92,8 @@ public class OidcService implements IOidcService
     throws OidcApiException
     {
         return oidcResponseValidatorService.tokenEndpointValidator(
-            oidcHttpClientService.post(
-                oidcConfig.getTokenEndpoint(),
+            getOidcHttpClientService().post(
+                getOidcConfig().getTokenEndpoint(),
                 Map.of(
                     "client_id", clientId,
                     "client_secret", clientSecret,
@@ -84,8 +111,8 @@ public class OidcService implements IOidcService
     ) throws OidcApiException
     {
         return oidcResponseValidatorService.introspectEndpointValidator(
-            oidcHttpClientService.post(
-                oidcConfig.getIntrospectionEndpoint(),
+            getOidcHttpClientService().post(
+                getOidcConfig().getIntrospectionEndpoint(),
                 Map.of("token", accessToken),
                 IntrospectRawResponse.class,
                 basicAuth
@@ -96,7 +123,7 @@ public class OidcService implements IOidcService
     public @NonNull JwksKeys callJwksEndpoint() throws OidcApiException
     {
         return oidcResponseValidatorService.jwksEndpointValidator(
-            oidcHttpClientService.get(oidcConfig.getJwksUri(), JwksKeys.class)
+            getOidcHttpClientService().get(getOidcConfig().getJwksUri(), JwksKeys.class)
         );
     }
 
@@ -209,8 +236,8 @@ public class OidcService implements IOidcService
     // @todo: test
     public <T> @NonNull T callUserInfoEndpoint(String idToken, @NonNull Class<T> mapperClass) throws OidcApiException
     {
-        return oidcHttpClientService.get(
-            oidcConfig.getUserinfoEndpoint(),
+        return getOidcHttpClientService().get(
+            getOidcConfig().getUserinfoEndpoint(),
             new HashMap<>(),
             Map.of("Authorization", "Bearer " + idToken),
             mapperClass
