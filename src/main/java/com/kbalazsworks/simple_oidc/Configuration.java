@@ -12,7 +12,7 @@ import io.activej.inject.module.AbstractModule;
 public class Configuration
 {
     private static final String DISCOVERY_ENDPOINT = "/.well-known/openid-configuration";
-    private static final String HOST               = "https://localhost:5001n";
+    private static final String HOST               = "https://localhost:5001";
 
     public AbstractModule setUpDi()
     {
