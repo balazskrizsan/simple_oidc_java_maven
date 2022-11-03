@@ -72,7 +72,7 @@ public class OidcHttpClientService
         }
         catch (Exception e)
         {
-            log.error("GET Response error: {}", e.getMessage());
+            log.error("GET Response error: {}", e.getMessage(), e);
 
             throw new OidcApiException("GET Response error");
         }
@@ -127,7 +127,7 @@ public class OidcHttpClientService
         }
         catch (Exception e)
         {
-            log.error("GET Response error: {}", e.getMessage());
+            log.error("GET Response error: {}", e.getMessage(), e);
 
             throw new OidcApiException("GET Response error");
         }
