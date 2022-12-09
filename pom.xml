@@ -72,6 +72,25 @@
         </dependency>
     </dependencies>
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-plugin-plugin</artifactId>
+                    <version>3.6.0</version>
+                    <configuration>
+                        <!-- see http://jira.codehaus.org/browse/MNG-5346 -->
+                        <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.9.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -82,4 +101,13 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub kbalazsworks Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/balazskrizsan/stackjudge_notification_sdk_java_maven</url>
+        </repository>
+    </distributionManagement>
+
 </project>
