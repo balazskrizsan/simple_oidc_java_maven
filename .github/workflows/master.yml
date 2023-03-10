@@ -36,7 +36,8 @@ jobs:
         distribution: zulu
         cache: maven
 
-    - uses: isbang/compose-action@v1.4.1
+    - name: IDS+PSQL docker-compose
+      uses: isbang/compose-action@v1.4.1
       with:
         compose-file: "./cicd/docker-compose-simple-oidc-ids6-e2e-test.yml"
         down-flags: "--volumes"
