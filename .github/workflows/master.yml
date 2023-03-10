@@ -36,6 +36,14 @@ jobs:
         distribution: zulu
         cache: maven
 
+    - uses: isbang/compose-action@v1.4.1
+      with:
+        compose-file: "./cicd/docker-compose-simple-oidc-ids6-e2e-test.yml"
+        down-flags: "--volumes"
+        services: |
+          simple_oidc_ids6_e2e_test_app
+          simple_oidc_ids6_e2e_test_postgres
+
     - name: Build with Maven
       run: mvn -B package --file pom.xml -DskipTests=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
 
