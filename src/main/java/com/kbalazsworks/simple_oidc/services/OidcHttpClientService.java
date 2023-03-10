@@ -29,7 +29,7 @@ public class OidcHttpClientService
 
     private OkHttpClient getClient()
     {
-        return okHttpFactory.createOkHttpClient(); // @todo create bean
+        return okHttpFactory.createOkHttpClient(false); // @todo create bean
     }
 
     // @todo: test

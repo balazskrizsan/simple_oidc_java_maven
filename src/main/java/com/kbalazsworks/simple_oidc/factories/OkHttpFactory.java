@@ -27,16 +27,30 @@ public class OkHttpFactory implements IOkHttpFactory
         }
     };
 
-    @SneakyThrows public OkHttpClient createOkHttpClient()
+    @SneakyThrows
+    public OkHttpClient createOkHttpClient()
     {
-        SSLContext sslContext = SSLContext.getInstance("SSL");
-        sslContext.init(null, new TrustManager[] { TRUST_ALL_CERTS }, new java.security.SecureRandom());
+        return createOkHttpClient(true);
+    }
+
+    @SneakyThrows
+    public OkHttpClient createOkHttpClient(boolean isHttps)
+    {
+        SSLContext sslContext = SSLContext.getInstance("SSL");;
+        if (isHttps)
+        {
+            sslContext.init(null, new TrustManager[]{TRUST_ALL_CERTS}, new java.security.SecureRandom());
+        }
 
         log.info("OkHttpClient created");
 
-        return new OkHttpClient()
-            .newBuilder()
-            .sslSocketFactory(sslContext.getSocketFactory(), TRUST_ALL_CERTS)
+        OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
+        if (isHttps)
+        {
+            builder = builder.sslSocketFactory(sslContext.getSocketFactory(), TRUST_ALL_CERTS);
+        }
+
+        return builder
             .readTimeout(1000, TimeUnit.MILLISECONDS)
             .writeTimeout(1000, TimeUnit.MILLISECONDS)
             .build();

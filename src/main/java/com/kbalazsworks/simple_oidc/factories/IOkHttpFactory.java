@@ -5,4 +5,6 @@ import okhttp3.OkHttpClient;
 public interface IOkHttpFactory
 {
     OkHttpClient createOkHttpClient();
+
+    OkHttpClient createOkHttpClient(boolean isHttps);
 }
