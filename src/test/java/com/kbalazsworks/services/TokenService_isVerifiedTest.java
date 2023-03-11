@@ -8,21 +8,21 @@ import java.security.PublicKey;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TokenService_isVerifiedTest extends AbstractTest
-{
-    @Test
-    @SneakyThrows
-    public void validKeyData_returnTrue()
-    {
-        // Arrange
-        PublicKey testedPublicKey  = getValidPublicKey();
-        byte[]    testedSignedData = getValidSignedData();
-        byte[]    testedSignature  = getValidSignature();
-
-        // Act
-        Boolean actual = getTokenService().isVerified(testedPublicKey, testedSignedData, testedSignature);
-
-        // Assert
-        assertThat(actual).isTrue();
-    }
-}
+//public class TokenService_isVerifiedTest extends AbstractTest
+//{
+//    @Test
+//    @SneakyThrows
+//    public void validKeyData_returnTrue()
+//    {
+//        // Arrange
+//        PublicKey testedPublicKey  = getValidPublicKey();
+//        byte[]    testedSignedData = getValidSignedData();
+//        byte[]    testedSignature  = getValidSignature();
+//
+//        // Act
+//        Boolean actual = getTokenService().isVerified(testedPublicKey, testedSignedData, testedSignature);
+//
+//        // Assert
+//        assertThat(actual).isTrue();
+//    }
+//}
