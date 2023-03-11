@@ -26,8 +26,8 @@ public class OidcService_callTokenEndpointTest extends AbstractTest
         String       expectedTyp         = "at+jwt";
         String       expectedClientId    = "client1_client_credentials";
         List<String> expectedScopeAsList = List.of("test_scope", "test_scope.a");
-        String       expectedIss         = "https://localhost:5001";
-        List<String> expectedAud         = List.of("test_resource_a", "https://localhost:5001/resources");
+        String       expectedIss         = "http://localhost:91";
+        List<String> expectedAud         = List.of("test_resource_a", "http://localhost:91/resources");
         Integer      expectedExpiresIn   = 3600;
         String       expectedTokenType   = "Bearer";
         String       expectedScope       = "test_scope test_scope.a";
@@ -62,8 +62,8 @@ public class OidcService_callTokenEndpointTest extends AbstractTest
         String       expectedTyp         = "at+jwt";
         String       expectedClientId    = "client1_client_credentials";
         List<String> expectedScopeAsList = List.of("test_scope", "test_scope.a");
-        String       expectedIss         = "https://localhost:5001";
-        List<String> expectedAud         = List.of("test_resource_a", "https://localhost:5001/resources");
+        String       expectedIss         = "http://localhost:91";
+        List<String> expectedAud         = List.of("test_resource_a", "http://localhost:91/resources");
         Integer      expectedExpiresIn   = 3600;
         String       expectedTokenType   = "Bearer";
         String       expectedScope       = "test_scope test_scope.a";
