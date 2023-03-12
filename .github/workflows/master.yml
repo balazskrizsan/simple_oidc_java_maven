@@ -45,10 +45,14 @@ jobs:
           simple_oidc_ids6_e2e_test_app
           simple_oidc_ids6_e2e_test_postgres
 
-    - name: Sleep for 10s
-      uses: juliangruber/sleep-action@v1
+    - name: Wake up IDS e2e test
+      uses: indiesdev/curl@v1.1
+      id: api
       with:
-        time: 10s
+        url: http://localhost:91/connect/token
+        method: "POST"
+        body: '{"client_id": "client1_client_credentials", "scope": "test_scope", "client_secret": "client1_client_credentials_secret", "grant_type": "client_credentials" }'
+        log-response: true
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
