@@ -18,7 +18,7 @@ abstract public class AbstractTest
     private static final String DISCOVERY_ENDPOINT = "/.well-known/openid-configuration";
     private static final String HOST               = "http://localhost:91";
 
-    protected final AccessTokenRawResponse LIVE_TOKEN = requestJwtAccessTokenFromIds();
+//    protected final AccessTokenRawResponse LIVE_TOKEN = requestJwtAccessTokenFromIds();
     protected final JwksKeys               LIVE_JWKS  = requestJwksFromIds();
 
     public OidcService getOidcService()
@@ -126,13 +126,13 @@ abstract public class AbstractTest
     @SneakyThrows
     public byte[] getValidSignature()
     {
-        return getTokenService().getSignature(LIVE_TOKEN.getAccessToken());
+        return getTokenService().getSignature(requestJwtAccessTokenFromIds().getAccessToken());
     }
 
     @SneakyThrows
     public byte[] getValidSignedData()
     {
-        return getTokenService().getSignedData(LIVE_TOKEN.getAccessToken());
+        return getTokenService().getSignedData(requestJwtAccessTokenFromIds().getAccessToken());
     }
 }
 

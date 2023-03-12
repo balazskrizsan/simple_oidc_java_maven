@@ -14,7 +14,7 @@ public class WakeUpTestIds extends AbstractTest
 {
     @SneakyThrows
     @Test
-    public void addGrantToTheStore_returnsTheAddedGrant()
+    public void wakeUp()
     {
         // Arrange
         ClientCredentials testedGrant    = new ClientCredentials("a", "b", List.of("c"));

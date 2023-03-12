@@ -33,7 +33,7 @@ public class OidcService_callTokenEndpointTest extends AbstractTest
         String       expectedScope       = "test_scope test_scope.a";
 
         // Act
-        AccessTokenRawResponse actual = LIVE_TOKEN;
+        AccessTokenRawResponse actual = requestJwtAccessTokenFromIds();
 
         // Assert
         JwtData   jwtData   = getTokenService().getJwtData(actual.getAccessToken());
