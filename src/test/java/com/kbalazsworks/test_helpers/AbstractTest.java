@@ -19,7 +19,7 @@ abstract public class AbstractTest
     private static final String HOST               = "http://localhost:91";
 
 //    protected final AccessTokenRawResponse LIVE_TOKEN = requestJwtAccessTokenFromIds();
-    protected final JwksKeys               LIVE_JWKS  = requestJwksFromIds();
+//    protected final JwksKeys               LIVE_JWKS  = requestJwksFromIds();
 
     public OidcService getOidcService()
     {
