@@ -36,7 +36,7 @@ jobs:
         distribution: zulu
         cache: maven
 
-    - name: IDS+PSQL docker-compose
+    - name: IDS+PSQL docker-compose test env
       uses: isbang/compose-action@v1.4.1
       with:
         compose-file: "./cicd/docker-compose-simple-oidc-ids6-e2e-test.yml"
