@@ -4,7 +4,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.balazskrizsan</groupId>
-    <artifactId>simple_oidc_java_maven</artifactId>
+    <artifactId>simple-oidc-simple_oidc_java_maven</artifactId>
     <version>1.0.1-SNAPSHOT</version>
     <properties>
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
@@ -100,28 +100,14 @@
                     <parameters>${maven.compiler.parameters}</parameters>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.13</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
     <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
         <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <id>simple-oidc-simple_oidc_java_maven</id>
+            <name>simple-oidc-simple_oidc_java_maven</name>
+            <url>https://simple-oidc-926974633545.d.codeartifact.us-east-1.amazonaws.com/maven/simple_oidc_java_maven/</url>
         </repository>
     </distributionManagement>
 
