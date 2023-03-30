@@ -13,9 +13,14 @@ import com.kbalazsworks.simple_oidc.exceptions.OidcScopeException;
 import lombok.NonNull;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IOidcService
 {
+
+    @NonNull AccessTokenRawResponse callTokenEndpoint(@NonNull String key)
+    throws GrantStoreException, OidcApiException;
+
     @NonNull AccessTokenRawResponse callTokenEndpoint(
         @NonNull String clientId,
         @NonNull String clientSecret,
@@ -23,10 +28,15 @@ public interface IOidcService
         @NonNull String grantType
     ) throws OidcApiException;
 
-    @NonNull GrantStoreService getGrantStoreService();
+    @NonNull AccessTokenRawResponse callTokenEndpoint(
+        @NonNull String clientId,
+        @NonNull String clientSecret,
+        @NonNull String scope,
+        @NonNull String grantType,
+        @NonNull Map<String, String> extraParams
+    ) throws OidcApiException;
 
-    @NonNull AccessTokenRawResponse callTokenEndpoint(@NonNull String key)
-    throws GrantStoreException, OidcApiException;
+    @NonNull GrantStoreService getGrantStoreService();
 
     @NonNull IntrospectRawResponse callIntrospectEndpoint(@NonNull String accessToken, @NonNull BasicAuth basicAuth)
     throws OidcApiException;

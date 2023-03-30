@@ -80,7 +80,8 @@ public class OidcService implements IOidcService
             clientCredential.getClientId(),
             clientCredential.getClientSecret(),
             clientCredential.getScopeAsString(),
-            clientCredential.getGrantType()
+            clientCredential.getGrantType(),
+            new HashMap<>()
         );
     }
 
@@ -92,17 +93,33 @@ public class OidcService implements IOidcService
     )
     throws OidcApiException
     {
+        return callTokenEndpoint(clientId, clientSecret, scope, grantType, new HashMap<>());
+    }
+
+    public @NonNull AccessTokenRawResponse callTokenEndpoint(
+        @NonNull String clientId,
+        @NonNull String clientSecret,
+        @NonNull String scope,
+        @NonNull String grantType,
+        @NonNull Map<String, String> extraParams
+    )
+    throws OidcApiException
+    {
         log.info("Call token endpoint with ClientId: {}", clientId);
+
+        Map<String, String> params = new HashMap<>()
+        {{
+            put("client_id", clientId);
+            put("client_secret", clientSecret);
+            put("scope", scope);
+            put("grant_type", grantType);
+        }};
+        params.putAll(extraParams);
 
         return oidcResponseValidatorService.tokenEndpointValidator(
             getOidcHttpClientService().post(
                 getOidcConfig().getTokenEndpoint(),
-                Map.of(
-                    "client_id", clientId,
-                    "client_secret", clientSecret,
-                    "scope", scope,
-                    "grant_type", grantType
-                ),
+                params,
                 AccessTokenRawResponse.class
             )
         );
