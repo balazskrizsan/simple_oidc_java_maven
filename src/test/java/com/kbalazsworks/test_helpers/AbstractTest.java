@@ -1,9 +1,9 @@
 package com.kbalazsworks.test_helpers;
 
 import com.kbalazsworks.simple_oidc.entities.AccessTokenRawResponse;
+import com.kbalazsworks.simple_oidc.entities.BasicAuth;
 import com.kbalazsworks.simple_oidc.entities.JwksKeyItem;
 import com.kbalazsworks.simple_oidc.entities.JwksKeys;
-import com.kbalazsworks.simple_oidc.exceptions.OidcApiException;
 import com.kbalazsworks.simple_oidc.factories.OidcSystemFactory;
 import com.kbalazsworks.simple_oidc.services.GrantStoreService;
 import com.kbalazsworks.simple_oidc.services.OidcResponseValidatorService;
@@ -15,8 +15,9 @@ import java.security.PublicKey;
 
 abstract public class AbstractTest
 {
-    private static final String DISCOVERY_ENDPOINT = "/.well-known/openid-configuration";
-    private static final String HOST               = "http://localhost:91";
+    private static final   String    DISCOVERY_ENDPOINT    = "/.well-known/openid-configuration";
+    protected static final String    HOST                  = "http://localhost:5000";
+    protected static final BasicAuth INTROSPECT_BASIC_AUTH = new BasicAuth("test_resource_a", "test_resource_a_secret");
 
 //    protected final AccessTokenRawResponse LIVE_TOKEN = requestJwtAccessTokenFromIds();
 //    protected final JwksKeys               LIVE_JWKS  = requestJwksFromIds();
@@ -99,6 +100,7 @@ abstract public class AbstractTest
 
         return getOidcService().callTokenEndpoint(testedClientId, testedClientSecret, testedScope, testedGrantType);
     }
+
     @SneakyThrows
     public JwksKeys requestJwksFromIds()
     {
