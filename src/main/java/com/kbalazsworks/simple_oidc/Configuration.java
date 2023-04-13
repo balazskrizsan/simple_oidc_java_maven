@@ -32,4 +32,23 @@ public class Configuration
             }
         };
     }
+
+    public AbstractModule setUpDi(String host)
+    {
+        return new AbstractModule()
+        {
+            @Provides
+            OidcService oidcService() throws OidcApiException
+            {
+                return new OidcService(
+                    host,
+                    DISCOVERY_ENDPOINT,
+                    new TokenService(),
+                    new OidcSystemFactory(),
+                    new OidcResponseValidatorService(),
+                    new GrantStoreService()
+                );
+            }
+        };
+    }
 }
