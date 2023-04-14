@@ -22,6 +22,7 @@ import java.util.Map;
 @Log4j2
 public class OidcHttpClientService
 {
+    private final boolean isHttps;
     private final IOkHttpFactory okHttpFactory;
 
     private static final ObjectMapper objectMapper = new ObjectMapper()
@@ -29,7 +30,7 @@ public class OidcHttpClientService
 
     private OkHttpClient getClient()
     {
-        return okHttpFactory.createOkHttpClient(false); // @todo create bean
+        return okHttpFactory.createOkHttpClient(isHttps); // @todo create bean
     }
 
     // @todo: test

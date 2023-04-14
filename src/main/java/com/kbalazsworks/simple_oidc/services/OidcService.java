@@ -51,7 +51,9 @@ public class OidcService implements IOidcService
     {
         if (null == oidcHttpClientService || null == oidcConfig)
         {
-            oidcHttpClientService = new OidcHttpClientService(new OkHttpFactory());
+            boolean isHttps = host.contains("https");
+
+            oidcHttpClientService = new OidcHttpClientService(isHttps, new OkHttpFactory());
             oidcConfig            = oidcHttpClientService.get(host + discoverEndpoint, OidcConfig.class);
         }
     }
