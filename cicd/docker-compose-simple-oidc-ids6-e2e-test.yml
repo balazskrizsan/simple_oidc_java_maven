@@ -9,7 +9,7 @@ services:
     depends_on:
       - simple_oidc_ids6_e2e_test_postgres
     environment:
-      env: "LocalDocker"
+      env: "Docker"
 
   simple_oidc_ids6_e2e_test_postgres:
     image: "postgres:13"
