@@ -74,7 +74,7 @@ public class OidcService_callTokenEndpointTest extends AbstractTest
         String expectedScope = "test_token_exchange";
         String expectedSub = "xc/test_token_exchange";
         String expectedClient = "client.token_exchange";
-        String expectedIss = "http://localhost:5000";
+        String expectedIss = HOST;
         String expectedIdp = "idp";
         boolean expectedActive = true;
         String exchangeFromActive = "xc/test_token_exchange";
