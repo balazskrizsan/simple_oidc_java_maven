@@ -16,7 +16,7 @@ import java.security.PublicKey;
 abstract public class AbstractTest
 {
     private static final   String    DISCOVERY_ENDPOINT    = "/.well-known/openid-configuration";
-    protected static final String    HOST                  = "http://localhost:5000";
+    protected static final String    HOST                  = "http://localhost:91";
     protected static final BasicAuth INTROSPECT_BASIC_AUTH = new BasicAuth("test_resource_a", "test_resource_a_secret");
 
 //    protected final AccessTokenRawResponse LIVE_TOKEN = requestJwtAccessTokenFromIds();
