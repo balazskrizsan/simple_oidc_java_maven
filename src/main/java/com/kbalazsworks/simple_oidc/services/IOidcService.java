@@ -4,7 +4,6 @@ import com.kbalazsworks.simple_oidc.entities.AccessTokenRawResponse;
 import com.kbalazsworks.simple_oidc.entities.BasicAuth;
 import com.kbalazsworks.simple_oidc.entities.IntrospectRawResponse;
 import com.kbalazsworks.simple_oidc.entities.JwksKeys;
-import com.kbalazsworks.simple_oidc.exceptions.GrantStoreException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcApiException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcExpiredTokenException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcJwksVerificationException;
@@ -19,7 +18,7 @@ public interface IOidcService
 {
 
     @NonNull AccessTokenRawResponse callTokenEndpoint(@NonNull String key)
-    throws GrantStoreException, OidcApiException;
+    throws OidcApiException;
 
     @NonNull AccessTokenRawResponse callTokenEndpoint(
         @NonNull String clientId,
@@ -57,5 +56,5 @@ public interface IOidcService
 
     @NonNull Boolean isJwksVerifiedToken(@NonNull String token);
 
-    public <T> @NonNull T callUserInfoEndpoint(String idToken, @NonNull Class<T> mapperClass) throws OidcApiException;
+    <T> @NonNull T callUserInfoEndpoint(String idToken, @NonNull Class<T> mapperClass) throws OidcApiException;
 }

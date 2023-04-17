@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum GrantTypeEnum
 {
     CLIENT_CREDENTIALS("client_credentials"),
-    TOKEN_EXHANGE("token_exchange");
+    TOKEN_EXCHANGE("token_exchange");
 
     final private String value;
 }

@@ -1,7 +1,6 @@
 package com.kbalazsworks.simple_oidc.services;
 
-import com.kbalazsworks.simple_oidc.entities.grant_type.ClientCredentials;
-import com.kbalazsworks.simple_oidc.exceptions.GrantStoreException;
+import com.kbalazsworks.simple_oidc.entities.grant_type.IGrantType;
 import lombok.NonNull;
 
 import java.util.Collections;
@@ -11,30 +10,16 @@ import java.util.Objects;
 
 public class GrantStoreService
 {
-    private Map<String, ClientCredentials> clientCredentialsState = new HashMap<>();
+    private Map<String, IGrantType> clientCredentialsState = new HashMap<>();
 
-    public <T> void addGrant(@NonNull String key, @NonNull T grant)
-    throws GrantStoreException
+    public void addGrant(@NonNull String key, @NonNull IGrantType grant)
     {
-        if (grant instanceof ClientCredentials)
-        {
-            clientCredentialsState.put(key, (ClientCredentials) grant);
-
-            return;
-        }
-
-        throw new GrantStoreException("GrantType not found");
+        clientCredentialsState.put(key, grant);
     }
 
-    public <T> @NonNull T getGrant(@NonNull String key, @NonNull Class<T> returnType)
-    throws GrantStoreException
+    public IGrantType getGrant(@NonNull String key)
     {
-        if (returnType == ClientCredentials.class)
-        {
-            return Objects.requireNonNull((T) clientCredentialsState.get(key), "Grant not found: " + key);
-        }
-
-        throw new GrantStoreException("GrantType not found");
+        return Objects.requireNonNull(clientCredentialsState.get(key));
     }
 
     public void protectStore()

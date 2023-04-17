@@ -10,12 +10,12 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Getter
-public class ClientCredentials implements IGrantType
+public class TokenExchange implements IGrantType
 {
     private final String              clientId;
     private final String              clientSecret;
     private final List<String>        scope;
-    private final String              grantType        = GrantTypeEnum.CLIENT_CREDENTIALS.getValue();
+    private final String              grantType        = GrantTypeEnum.TOKEN_EXCHANGE.getValue();
     private final Map<String, String> customParameters = new HashMap<>();
 
     public String getScopeAsString()
