@@ -16,8 +16,10 @@ import java.util.Map;
 
 public interface IOidcService
 {
-
     @NonNull AccessTokenRawResponse callTokenEndpoint(@NonNull String key)
+    throws OidcApiException;
+
+    @NonNull AccessTokenRawResponse callTokenEndpoint(@NonNull String key, @NonNull Map<String, String> extraParams)
     throws OidcApiException;
 
     @NonNull AccessTokenRawResponse callTokenEndpoint(

@@ -86,6 +86,24 @@ public class OidcService implements IOidcService
         );
     }
 
+    // @todo: test
+    @Override public @NonNull AccessTokenRawResponse callTokenEndpoint(
+        @NonNull String key,
+        @NonNull Map<String, String> extraParams
+    ) throws OidcApiException
+    {
+        log.info("Call token endpoint with key: {}", key);
+        IGrantType clientCredential = grantStoreService.getGrant(key);
+
+        return callTokenEndpoint(
+            clientCredential.getClientId(),
+            clientCredential.getClientSecret(),
+            clientCredential.getScopeAsString(),
+            clientCredential.getGrantType(),
+            new HashMap<>()
+        );
+    }
+
     public @NonNull AccessTokenRawResponse callTokenEndpoint(
         @NonNull String clientId,
         @NonNull String clientSecret,
