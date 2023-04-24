@@ -1,5 +1,6 @@
 package com.kbalazsworks.services;
 
+import com.google.inject.Inject;
 import com.kbalazsworks.simple_oidc.entities.grant_type.ClientCredentials;
 import com.kbalazsworks.simple_oidc.entities.grant_type.IGrantType;
 import com.kbalazsworks.simple_oidc.entities.grant_type.TokenExchange;
@@ -15,6 +16,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class GrantStoreService_addGrant_getGrantTest extends AbstractTest
 {
+    @Inject
+    GrantStoreService grantStoreService;
+
     @SneakyThrows
     @Test
     public void addGrantToTheStore_returnsTheAddedGrant()
@@ -28,7 +32,6 @@ public class GrantStoreService_addGrant_getGrantTest extends AbstractTest
         IGrantType expectedGrant2  = new TokenExchange("q", "w", List.of("e"));
 
         // Act
-        GrantStoreService grantStoreService = getOidcService().getGrantStoreService();
         grantStoreService.addGrant(testedGrantKey1, testedGrant1);
         grantStoreService.addGrant(testedGrantKey2, testedGrant2);
         IGrantType actual1 = grantStoreService.getGrant(testedGrantKey1);

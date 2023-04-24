@@ -1,6 +1,6 @@
 package com.kbalazsworks.simple_oidc.factories;
 
-public class OidcSystemFactory
+public class SystemFactory
 {
     public long getCurrentTimeMillis()
     {

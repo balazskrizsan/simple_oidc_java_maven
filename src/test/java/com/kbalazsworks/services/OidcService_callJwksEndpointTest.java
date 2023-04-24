@@ -1,5 +1,6 @@
 package com.kbalazsworks.services;
 
+import com.google.inject.Inject;
 import com.kbalazsworks.simple_oidc.entities.JwksKeyItem;
 import com.kbalazsworks.simple_oidc.entities.JwksKeys;
 import com.kbalazsworks.test_helpers.AbstractTest;
@@ -11,6 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 //public class OidcService_callJwksEndpointTest extends AbstractTest
 //{
+//    @Inject
+//    private OidcService oidcService;
+//
 //    @Test
 //    @SneakyThrows
 //    public void availableEndpointCallTest_returnsExpectedJwksObjects()
@@ -19,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 //        JwksKeyItem jwksKeyItem = getJwksKeyItem();
 //
 //        // Act
-//        JwksKeys actual = getOidcService().callJwksEndpoint();
+//        JwksKeys actual = oidcService.callJwksEndpoint();
 //
 //        // Assert
 //        assertAll(

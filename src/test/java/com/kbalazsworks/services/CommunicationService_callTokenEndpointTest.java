@@ -1,12 +1,14 @@
 package com.kbalazsworks.services;
 
+import com.google.inject.Inject;
 import com.kbalazsworks.simple_oidc.entities.AccessTokenRawResponse;
 import com.kbalazsworks.simple_oidc.entities.IntrospectRawResponse;
 import com.kbalazsworks.simple_oidc.entities.JwtData;
 import com.kbalazsworks.simple_oidc.entities.JwtHeader;
 import com.kbalazsworks.simple_oidc.entities.grant_type.ClientCredentials;
 import com.kbalazsworks.simple_oidc.services.GrantStoreService;
-import com.kbalazsworks.simple_oidc.services.OidcService;
+import com.kbalazsworks.simple_oidc.services.ICommunicationService;
+import com.kbalazsworks.simple_oidc.services.JwtValidationService;
 import com.kbalazsworks.test_helpers.AbstractTest;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -18,8 +20,15 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class OidcService_callTokenEndpointTest extends AbstractTest
+public class CommunicationService_callTokenEndpointTest extends AbstractTest
 {
+    @Inject
+    GrantStoreService     grantStoreService;
+    @Inject
+    ICommunicationService communicationService;
+    @Inject
+    JwtValidationService  jwtValidationService;
+
     @Test
     @SneakyThrows
     public void callTokenEndpointWithValidParameters_returnsValidJwt()
@@ -29,8 +38,8 @@ public class OidcService_callTokenEndpointTest extends AbstractTest
         String       expectedTyp         = "at+jwt";
         String       expectedClientId    = "client1_client_credentials";
         List<String> expectedScopeAsList = List.of("test_scope", "test_scope.a");
-        String       expectedIss         = HOST;
-        List<String> expectedAud         = List.of("test_resource_a", HOST + "/resources");
+        String       expectedIss         = "e2e.test";
+        List<String> expectedAud         = List.of("test_resource_a", "e2e.test/resources");
         Integer      expectedExpiresIn   = 3600;
         String       expectedTokenType   = "Bearer";
         String       expectedScope       = "test_scope test_scope.a";
@@ -39,8 +48,8 @@ public class OidcService_callTokenEndpointTest extends AbstractTest
         AccessTokenRawResponse actual = requestJwtAccessTokenFromIds();
 
         // Assert
-        JwtData   jwtData   = getTokenService().getJwtData(actual.getAccessToken());
-        JwtHeader jwtHeader = getTokenService().getJwtHeader(actual.getAccessToken());
+        JwtData   jwtData   = jwtValidationService.getJwtData(actual.getAccessToken());
+        JwtHeader jwtHeader = jwtValidationService.getJwtHeader(actual.getAccessToken());
 
         assertAll(
             () -> assertThat(jwtHeader.getAlg()).isEqualTo(expectedAlg),
@@ -71,32 +80,33 @@ public class OidcService_callTokenEndpointTest extends AbstractTest
         String secondTestedScope        = "test_token_exchange";
         String secondTestedGrantType    = "token_exchange";
 
-        String expectedScope = "test_token_exchange";
-        String expectedSub = "xc/test_token_exchange";
-        String expectedClient = "client.token_exchange";
-        String expectedIss = HOST;
-        String expectedIdp = "idp";
-        boolean expectedActive = true;
-        String exchangeFromActive = "xc/test_token_exchange";
+        String  expectedScope      = "test_token_exchange";
+        String  expectedSub        = "xc/test_token_exchange";
+        String  expectedClient     = "client.token_exchange";
+        String  expectedIss        = "e2e.test";
+        String  expectedIdp        = "idp";
+        boolean expectedActive     = true;
+        String  exchangeFromActive = "xc/test_token_exchange";
 
         // Act
-        @NonNull AccessTokenRawResponse firstActual = getOidcService().callTokenEndpoint(
+        @NonNull AccessTokenRawResponse firstActual = communicationService.callTokenEndpoint(
             firstTestedClientId,
             firstTestedClientSecret,
             firstTestedScope,
             firstTestedGrantType
         );
-        @NonNull AccessTokenRawResponse secondActual = getOidcService().callTokenEndpoint(
+        @NonNull AccessTokenRawResponse secondActual = communicationService.callTokenEndpoint(
             secondTestedClientId,
             secondTestedClientSecret,
             secondTestedScope,
             secondTestedGrantType,
-            new HashMap<>() {{
+            new HashMap<>()
+            {{
                 put("token", firstActual.getAccessToken());
                 put("exchange_from", exchangeFromActive);
             }}
         );
-        IntrospectRawResponse introspectActual = getOidcService()
+        IntrospectRawResponse introspectActual = communicationService
             .callIntrospectEndpoint(secondActual.getAccessToken(), INTROSPECT_BASIC_AUTH);
 
         // Assert
@@ -119,15 +129,12 @@ public class OidcService_callTokenEndpointTest extends AbstractTest
         String       expectedTyp         = "at+jwt";
         String       expectedClientId    = "client1_client_credentials";
         List<String> expectedScopeAsList = List.of("test_scope", "test_scope.a");
-        String       expectedIss         = HOST;
-        List<String> expectedAud         = List.of("test_resource_a", HOST + "/resources");
+        String       expectedIss         = "e2e.test";
+        List<String> expectedAud         = List.of("test_resource_a", "e2e.test/resources");
         Integer      expectedExpiresIn   = 3600;
         String       expectedTokenType   = "Bearer";
         String       expectedScope       = "test_scope test_scope.a";
 
-        OidcService oidcService = getOidcService();
-
-        GrantStoreService grantStoreService = oidcService.getGrantStoreService();
         grantStoreService.addGrant("test1", new ClientCredentials(
             "client1_client_credentials",
             "client1_client_credentials_secret",
@@ -136,11 +143,11 @@ public class OidcService_callTokenEndpointTest extends AbstractTest
         grantStoreService.protectStore();
 
         // Act
-        AccessTokenRawResponse actual = oidcService.callTokenEndpoint("test1");
+        AccessTokenRawResponse actual = communicationService.callTokenEndpoint("test1");
 
         // Assert
-        JwtData   jwtData   = getTokenService().getJwtData(actual.getAccessToken());
-        JwtHeader jwtHeader = getTokenService().getJwtHeader(actual.getAccessToken());
+        JwtData   jwtData   = jwtValidationService.getJwtData(actual.getAccessToken());
+        JwtHeader jwtHeader = jwtValidationService.getJwtHeader(actual.getAccessToken());
 
         assertAll(
             () -> assertThat(jwtHeader.getAlg()).isEqualTo(expectedAlg),

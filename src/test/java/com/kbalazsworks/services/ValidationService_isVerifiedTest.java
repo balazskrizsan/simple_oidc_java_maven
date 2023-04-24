@@ -1,14 +1,10 @@
 package com.kbalazsworks.services;
 
 import com.kbalazsworks.test_helpers.AbstractTest;
-import lombok.SneakyThrows;
-import org.junit.Test;
-
-import java.security.PublicKey;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-//public class TokenService_isVerifiedTest extends AbstractTest
+//public class ValidationService_isVerifiedTest extends AbstractTest
 //{
 //    @Test
 //    @SneakyThrows

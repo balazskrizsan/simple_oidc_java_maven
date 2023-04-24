@@ -1,14 +1,19 @@
 package com.kbalazsworks.services;
 
+import com.google.inject.Inject;
 import com.kbalazsworks.simple_oidc.entities.AccessTokenRawResponse;
+import com.kbalazsworks.simple_oidc.services.ValidationService;
 import com.kbalazsworks.test_helpers.AbstractTest;
 import lombok.SneakyThrows;
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OidcService_isJwksVerifiedTokenTest extends AbstractTest
+public class ValidationService_checkJwksVerifiedTokenTest extends AbstractTest
 {
+    @Inject
+    ValidationService validationService;
+
     @Test
     @SneakyThrows
     public void freshNewToken_doesNothing()
@@ -16,12 +21,10 @@ public class OidcService_isJwksVerifiedTokenTest extends AbstractTest
         // Arrange
         AccessTokenRawResponse testedToken = requestJwtAccessTokenFromIds();
 
-        boolean expectedReponse = true;
-
         // Act
-        boolean actual = getOidcService().isJwksVerifiedToken(testedToken.getAccessToken());
+        validationService.checkJwksVerifiedToken(testedToken.getAccessToken());
 
         // Assert
-        assertThat(actual).isEqualTo(expectedReponse);
+        assertTrue(true);
     }
 }

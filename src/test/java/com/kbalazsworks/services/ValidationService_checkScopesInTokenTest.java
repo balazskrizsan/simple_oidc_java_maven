@@ -1,7 +1,9 @@
 package com.kbalazsworks.services;
 
+import com.google.inject.Inject;
 import com.kbalazsworks.simple_oidc.entities.AccessTokenRawResponse;
 import com.kbalazsworks.simple_oidc.exceptions.OidcScopeException;
+import com.kbalazsworks.simple_oidc.services.ValidationService;
 import com.kbalazsworks.test_helpers.AbstractTest;
 import lombok.SneakyThrows;
 import org.junit.Test;
@@ -11,8 +13,11 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OidcService_checkScopesInTokenTest extends AbstractTest
+public class ValidationService_checkScopesInTokenTest extends AbstractTest
 {
+    @Inject
+    ValidationService validationService;
+
     @Test
     @SneakyThrows
     public void availableScopeInTokenCheck_doesNothing()
@@ -21,7 +26,7 @@ public class OidcService_checkScopesInTokenTest extends AbstractTest
         AccessTokenRawResponse testedToken = requestJwtAccessTokenFromIds();
 
         // Act
-        getOidcService().checkScopesInToken(testedToken.getAccessToken(), List.of("test_scope.a"));
+        validationService.checkScopesInToken(testedToken.getAccessToken(), List.of("test_scope.a"));
 
         // Assert
         assertTrue(true);
@@ -38,7 +43,7 @@ public class OidcService_checkScopesInTokenTest extends AbstractTest
         String                    expectedExceptionMessage = "No scope found in token";
 
         // Act - Assert
-        assertThatThrownBy(() -> getOidcService().checkScopesInToken(testedToken.getAccessToken(), List.of("qweasd")))
+        assertThatThrownBy(() -> validationService.checkScopesInToken(testedToken.getAccessToken(), List.of("qweasd")))
             .isInstanceOf(exceptedException)
             .hasMessage(expectedExceptionMessage);
     }

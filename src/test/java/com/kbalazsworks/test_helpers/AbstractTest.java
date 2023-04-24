@@ -1,38 +1,35 @@
 package com.kbalazsworks.test_helpers;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.kbalazsworks.simple_oidc.DiConfigModule;
 import com.kbalazsworks.simple_oidc.entities.AccessTokenRawResponse;
 import com.kbalazsworks.simple_oidc.entities.BasicAuth;
 import com.kbalazsworks.simple_oidc.entities.JwksKeyItem;
 import com.kbalazsworks.simple_oidc.entities.JwksKeys;
-import com.kbalazsworks.simple_oidc.factories.OidcSystemFactory;
-import com.kbalazsworks.simple_oidc.services.GrantStoreService;
-import com.kbalazsworks.simple_oidc.services.OidcResponseValidatorService;
-import com.kbalazsworks.simple_oidc.services.OidcService;
-import com.kbalazsworks.simple_oidc.services.TokenService;
+import com.kbalazsworks.simple_oidc.services.CommunicationService;
+import com.kbalazsworks.simple_oidc.services.JwtValidationService;
 import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
+import org.junit.Before;
 
 import java.security.PublicKey;
 
+
+@Log4j2
 abstract public class AbstractTest
 {
+    protected Injector injector = Guice.createInjector(new DiConfigModule());
+
+    @Before
+    public void setup()
+    {
+        injector.injectMembers(this);
+    }
+
     private static final   String    DISCOVERY_ENDPOINT    = "/.well-known/openid-configuration";
     protected static final String    HOST                  = "http://localhost:91";
     protected static final BasicAuth INTROSPECT_BASIC_AUTH = new BasicAuth("test_resource_a", "test_resource_a_secret");
-
-//    protected final AccessTokenRawResponse LIVE_TOKEN = requestJwtAccessTokenFromIds();
-//    protected final JwksKeys               LIVE_JWKS  = requestJwksFromIds();
-
-    public OidcService getOidcService()
-    {
-        return new OidcService(
-            HOST,
-            DISCOVERY_ENDPOINT,
-            new TokenService(),
-            new OidcSystemFactory(),
-            new OidcResponseValidatorService(),
-            new GrantStoreService()
-        );
-    }
 
     /**
      * {
@@ -98,13 +95,21 @@ abstract public class AbstractTest
         String testedScope        = "test_scope test_scope.a";
         String testedGrantType    = "client_credentials";
 
-        return getOidcService().callTokenEndpoint(testedClientId, testedClientSecret, testedScope, testedGrantType);
+        return injector
+            .getInstance(CommunicationService.class)
+            .callTokenEndpoint(testedClientId, testedClientSecret, testedScope, testedGrantType);
+    }
+
+    @SneakyThrows
+    public AccessTokenRawResponse requestJwtAccessTokenFromIdsWithGrantStoreKey(String grantStoryKey)
+    {
+        return injector.getInstance(CommunicationService.class).callTokenEndpoint(grantStoryKey);
     }
 
     @SneakyThrows
     public JwksKeys requestJwksFromIds()
     {
-        return getOidcService().callJwksEndpoint();
+        return injector.getInstance(CommunicationService.class).callJwksEndpoint();
     }
 
     public String getInvalidToken()
@@ -112,29 +117,24 @@ abstract public class AbstractTest
         return "in-valid-token";
     }
 
-    public TokenService getTokenService()
-    {
-        return new TokenService();
-    }
-
     @SneakyThrows
     public PublicKey getValidPublicKey()
     {
         JwksKeyItem jwksKeyItem = getJwksKeyItem();
 
-        return getTokenService().getPublicKey(jwksKeyItem.getN(), jwksKeyItem.getE());
+        return injector.getInstance(JwtValidationService.class).getPublicKey(jwksKeyItem.getN(), jwksKeyItem.getE());
     }
 
     @SneakyThrows
     public byte[] getValidSignature()
     {
-        return getTokenService().getSignature(requestJwtAccessTokenFromIds().getAccessToken());
+        return injector.getInstance(JwtValidationService.class).getSignature(requestJwtAccessTokenFromIds().getAccessToken());
     }
 
     @SneakyThrows
     public byte[] getValidSignedData()
     {
-        return getTokenService().getSignedData(requestJwtAccessTokenFromIds().getAccessToken());
+        return injector.getInstance(JwtValidationService.class).getSignedData(requestJwtAccessTokenFromIds().getAccessToken());
     }
 }
 

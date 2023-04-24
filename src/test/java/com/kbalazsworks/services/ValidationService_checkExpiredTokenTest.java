@@ -1,8 +1,10 @@
 package com.kbalazsworks.services;
 
+import com.google.inject.Inject;
 import com.kbalazsworks.simple_oidc.entities.AccessTokenRawResponse;
 import com.kbalazsworks.simple_oidc.exceptions.OidcExpiredTokenException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcJwtParseException;
+import com.kbalazsworks.simple_oidc.services.ValidationService;
 import com.kbalazsworks.test_helpers.AbstractTest;
 import lombok.SneakyThrows;
 import org.junit.Test;
@@ -10,8 +12,11 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OidcService_checkExpiredTokenTest extends AbstractTest
+public class ValidationService_checkExpiredTokenTest extends AbstractTest
 {
+    @Inject
+    private ValidationService validationService;
+
     @Test
     @SneakyThrows
     public void invalidStringAsToken_throwsException()
@@ -23,7 +28,7 @@ public class OidcService_checkExpiredTokenTest extends AbstractTest
         String                       expectedMessage   = "JWT Data parse error";
 
         // Act - Assert
-        assertThatThrownBy(() -> getOidcService().checkExpiredToken(testedToken))
+        assertThatThrownBy(() -> validationService.checkExpiredToken(testedToken))
             .isInstanceOf(expectedException)
             .hasMessage(expectedMessage);
     }
@@ -39,7 +44,7 @@ public class OidcService_checkExpiredTokenTest extends AbstractTest
         String                           expectedMessage   = "Expired token";
 
         // Act - Assert
-        assertThatThrownBy(() -> getOidcService().checkExpiredToken(testedToken))
+        assertThatThrownBy(() -> validationService.checkExpiredToken(testedToken))
             .isInstanceOf(expectedException)
             .hasMessage(expectedMessage);
     }
@@ -52,7 +57,7 @@ public class OidcService_checkExpiredTokenTest extends AbstractTest
         AccessTokenRawResponse testedToken = requestJwtAccessTokenFromIds();
 
         // Act
-        getOidcService().checkExpiredToken(testedToken.getAccessToken());
+        validationService.checkExpiredToken(testedToken.getAccessToken());
 
         // Assert
         assertTrue(true);

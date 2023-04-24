@@ -70,6 +70,18 @@
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.inject/guice -->
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>5.1.0</version>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>
@@ -100,7 +112,18 @@
                     <parameters>${maven.compiler.parameters}</parameters>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-assertions-generator-maven-plugin</artifactId>
+                <version>2.2.0</version>
+                <configuration>
+                    <classes>
+                        <param>com.kbalazsworks.test_helpers.asserts.JwtAssert</param>
+                    </classes>
+                </configuration>
+            </plugin>
         </plugins>
+
     </build>
 
     <distributionManagement>

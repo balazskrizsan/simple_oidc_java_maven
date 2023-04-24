@@ -1,6 +1,8 @@
 package com.kbalazsworks.services;
 
+import com.google.inject.Inject;
 import com.kbalazsworks.simple_oidc.exceptions.OidcKeyException;
+import com.kbalazsworks.simple_oidc.services.JwtValidationService;
 import com.kbalazsworks.test_helpers.AbstractTest;
 import lombok.SneakyThrows;
 import okio.ByteString;
@@ -12,8 +14,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class TokenService_getPublicKeyTest extends AbstractTest
+public class JwtValidationService_getPublicKeyTest extends AbstractTest
 {
+    @Inject
+    JwtValidationService jwtValidationService;
+
     @Test
     @SneakyThrows
     public void validKeyData_generatesPublicKey()
@@ -32,7 +37,7 @@ public class TokenService_getPublicKeyTest extends AbstractTest
         String expectedEncodedHash = "[hex=bc20b5a69af5a1682e3974b272491c058a58848107eab579376ecac8bc4d5c35]";
 
         // Act
-        PublicKey actual = getTokenService().getPublicKey(testedModulus, testedExponent);
+        PublicKey actual = jwtValidationService.getPublicKey(testedModulus, testedExponent);
 
         // Assert
         assertAll(
@@ -55,7 +60,7 @@ public class TokenService_getPublicKeyTest extends AbstractTest
         String                  expectedErrorMessage = "Public key generate error";
 
         // Act - Assert
-        assertThatThrownBy(() -> getTokenService().getPublicKey(testedModulus, testedExponent))
+        assertThatThrownBy(() -> jwtValidationService.getPublicKey(testedModulus, testedExponent))
             .isInstanceOf(expectedException)
             .hasMessage(expectedErrorMessage);
     }

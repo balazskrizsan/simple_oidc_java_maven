@@ -2,27 +2,34 @@ package com.kbalazsworks.simple_oidc.services;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.Inject;
 import com.kbalazsworks.simple_oidc.entities.JwtData;
 import com.kbalazsworks.simple_oidc.entities.JwtHeader;
 import com.kbalazsworks.simple_oidc.exceptions.OidcJwtParseException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcKeyException;
+import com.kbalazsworks.simple_oidc.factories.SystemFactory;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.Signature;
-import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Base64;
 
+
 @Log4j2
-public class TokenService
+public class JwtValidationService
 {
+    @Inject
+    private IValidationService IValidationService;
+    @Inject
+    private SystemFactory      systemFactory;
+    @Inject
+    private ICommunicationService communicationService;
+
     private static final ObjectMapper objectMapper = new ObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
@@ -140,33 +147,9 @@ public class TokenService
         }
     }
 
-    public Boolean isVerified(PublicKey publicKey, byte[] signedData, byte[] signature)
-    {
-        try
-        {
-            return isVerifiedLogin(publicKey, signedData, signature);
-        }
-        catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e)
-        {
-            log.error("Publick key verification error: {}", e.getMessage());
-
-            return false;
-        }
-    }
-
-    private Boolean isVerifiedLogin(PublicKey publicKey, byte[] signedData, byte[] signature)
-    throws NoSuchAlgorithmException, InvalidKeyException, SignatureException
-    {
-        Signature sig = Signature.getInstance("SHA256withRSA");
-        sig.initVerify(publicKey);
-        sig.update(signedData);
-
-        return sig.verify(signature);
-    }
-
     private void checkValidTokenFormat(String token) throws OidcJwtParseException
     {
-        int tokenLength = token.replaceAll("[^\\.]", "").length();
+        int tokenLength = token.replaceAll("[^.]", "").length();
         if (tokenLength != 2)
         {
             throw new OidcJwtParseException("Number of the points in token is: " + tokenLength);

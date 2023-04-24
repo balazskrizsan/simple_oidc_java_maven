@@ -1,17 +1,21 @@
 package com.kbalazsworks.services;
 
+import com.google.inject.Inject;
 import com.kbalazsworks.simple_oidc.entities.AccessTokenRawResponse;
 import com.kbalazsworks.simple_oidc.exceptions.OidcJwtParseException;
+import com.kbalazsworks.simple_oidc.services.ValidationService;
 import com.kbalazsworks.test_helpers.AbstractTest;
 import lombok.SneakyThrows;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OidcService_isExpiredTokenTest extends AbstractTest
+public class ValidationService_isExpiredTokenTest extends AbstractTest
 {
+    @Inject
+    ValidationService validationService;
+
     @Test
     @SneakyThrows
     public void invalidStringAsToken_throwsException()
@@ -23,7 +27,7 @@ public class OidcService_isExpiredTokenTest extends AbstractTest
         String                       expectedMessage   = "JWT Data parse error";
 
         // Act - Assert
-        assertThatThrownBy(() -> getOidcService().isExpiredToken(testedToken))
+        assertThatThrownBy(() -> validationService.isExpiredToken(testedToken))
             .isInstanceOf(expectedException)
             .hasMessage(expectedMessage);
     }
@@ -38,7 +42,7 @@ public class OidcService_isExpiredTokenTest extends AbstractTest
         boolean expectedResponse = true;
 
         // Act - Assert
-        boolean actual = getOidcService().isExpiredToken(testedToken);
+        boolean actual = validationService.isExpiredToken(testedToken);
 
         assertThat(actual).isEqualTo(expectedResponse);
     }
@@ -53,7 +57,7 @@ public class OidcService_isExpiredTokenTest extends AbstractTest
         boolean expectedResponse = false;
 
         // Act
-        boolean actual = getOidcService().isExpiredToken(testedToken.getAccessToken());
+        boolean actual = validationService.isExpiredToken(testedToken.getAccessToken());
 
         // Assert
         assertThat(actual).isEqualTo(expectedResponse);

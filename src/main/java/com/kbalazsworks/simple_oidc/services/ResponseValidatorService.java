@@ -7,7 +7,7 @@ import com.kbalazsworks.simple_oidc.exceptions.OidcApiException;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class OidcResponseValidatorService
+public class ResponseValidatorService
 {
     public AccessTokenRawResponse tokenEndpointValidator(AccessTokenRawResponse response) throws OidcApiException
     {

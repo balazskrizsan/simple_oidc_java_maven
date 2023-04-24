@@ -1,7 +1,9 @@
 package com.kbalazsworks.services;
 
+import com.google.inject.Inject;
 import com.kbalazsworks.simple_oidc.entities.JwtData;
 import com.kbalazsworks.simple_oidc.exceptions.OidcJwtParseException;
+import com.kbalazsworks.simple_oidc.services.JwtValidationService;
 import com.kbalazsworks.test_helpers.AbstractTest;
 import lombok.SneakyThrows;
 import org.junit.Test;
@@ -11,8 +13,11 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class TokenService_getJwtDataTest extends AbstractTest
+public class JwtTokenValidationService_getJwtDataTest extends AbstractTest
 {
+    @Inject
+    JwtValidationService jwtValidationService;
+
     @Test
     @SneakyThrows
     public void validToken_willReturnTokenObject()
@@ -32,7 +37,7 @@ public class TokenService_getJwtDataTest extends AbstractTest
         );
 
         // Act
-        JwtData actual = getTokenService().getJwtData(testedToken);
+        JwtData actual = jwtValidationService.getJwtData(testedToken);
 
         // Assert
         assertThat(actual).usingRecursiveComparison().isEqualTo(expectedData);
@@ -48,7 +53,7 @@ public class TokenService_getJwtDataTest extends AbstractTest
         String                       expectedErrorMessage = "JWT Data parse error";
 
         // Act / Assert
-        assertThatThrownBy(() -> getTokenService().getJwtData(testedToken))
+        assertThatThrownBy(() -> jwtValidationService.getJwtData(testedToken))
             .isInstanceOf(expectedException)
             .hasMessage(expectedErrorMessage);
     }

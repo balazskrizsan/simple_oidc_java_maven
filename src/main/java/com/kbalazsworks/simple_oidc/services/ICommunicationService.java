@@ -14,7 +14,7 @@ import lombok.NonNull;
 import java.util.List;
 import java.util.Map;
 
-public interface IOidcService
+public interface ICommunicationService
 {
     @NonNull AccessTokenRawResponse callTokenEndpoint(@NonNull String key)
     throws OidcApiException;
@@ -37,26 +37,10 @@ public interface IOidcService
         @NonNull Map<String, String> extraParams
     ) throws OidcApiException;
 
-    @NonNull GrantStoreService getGrantStoreService();
-
     @NonNull IntrospectRawResponse callIntrospectEndpoint(@NonNull String accessToken, @NonNull BasicAuth basicAuth)
     throws OidcApiException;
 
     @NonNull JwksKeys callJwksEndpoint() throws OidcApiException;
-
-    void checkScopesInToken(@NonNull String token, @NonNull List<String> scopes)
-    throws OidcScopeException, OidcJwtParseException, OidcExpiredTokenException, OidcJwksVerificationException;
-
-    void checkValidated(String token)
-    throws OidcExpiredTokenException, OidcJwksVerificationException, OidcJwtParseException;
-
-    void checkExpiredToken(@NonNull String token) throws OidcExpiredTokenException, OidcJwtParseException;
-
-    @NonNull Boolean isExpiredToken(@NonNull String token) throws OidcJwtParseException;
-
-    void checkJwksVerifiedToken(@NonNull String token) throws OidcJwksVerificationException;
-
-    @NonNull Boolean isJwksVerifiedToken(@NonNull String token);
 
     <T> @NonNull T callUserInfoEndpoint(String idToken, @NonNull Class<T> mapperClass) throws OidcApiException;
 }
