@@ -20,7 +20,7 @@ public class SmartKeyStoreServiceTest_AddTest_GetTest extends AbstractTest
     @Inject
     private SmartTokenStoreService smartTokenStoreService;
     @Inject
-    private GrantStoreService grantStoreService;
+    private GrantStoreService      grantStoreService;
 
     @Test
     @SneakyThrows
