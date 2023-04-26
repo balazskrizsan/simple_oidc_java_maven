@@ -7,7 +7,7 @@ import com.kbalazsworks.simple_oidc.entities.JwtData;
 import com.kbalazsworks.simple_oidc.entities.JwtHeader;
 import com.kbalazsworks.simple_oidc.exceptions.OidcJwtParseException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcKeyException;
-import com.kbalazsworks.simple_oidc.factories.SystemFactory;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
@@ -19,21 +19,14 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Base64;
 
-
+@RequiredArgsConstructor(onConstructor = @__({@Inject}))
 @Log4j2
-public class JwtValidationService
+public class JwtValidationService implements IJwtValidationService
 {
-    @Inject
-    private IValidationService IValidationService;
-    @Inject
-    private SystemFactory      systemFactory;
-    @Inject
-    private ICommunicationService communicationService;
-
     private static final ObjectMapper objectMapper = new ObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    public JwtData getJwtData(String token) throws OidcJwtParseException
+    @Override public JwtData getJwtData(String token) throws OidcJwtParseException
     {
         try
         {
@@ -56,7 +49,7 @@ public class JwtValidationService
         return objectMapper.readValue(decodedJwtData, JwtData.class);
     }
 
-    public JwtHeader getJwtHeader(String token) throws OidcJwtParseException
+    @Override public JwtHeader getJwtHeader(String token) throws OidcJwtParseException
     {
         try
         {
@@ -81,7 +74,7 @@ public class JwtValidationService
         return objectMapper.readValue(decodedJwtHeader, JwtHeader.class);
     }
 
-    public PublicKey getPublicKey(String modulus, String exponent) throws OidcKeyException
+    @Override public PublicKey getPublicKey(String modulus, String exponent) throws OidcKeyException
     {
         try
         {
@@ -108,7 +101,7 @@ public class JwtValidationService
         return KeyFactory.getInstance("RSA").generatePublic(new RSAPublicKeySpec(bigModulus, bigExponent));
     }
 
-    public byte[] getSignature(String token) throws OidcJwtParseException
+    @Override public byte[] getSignature(String token) throws OidcJwtParseException
     {
         try
         {
@@ -131,7 +124,7 @@ public class JwtValidationService
         return Base64.getUrlDecoder().decode(signatureB64u);
     }
 
-    public byte[] getSignedData(String token) throws OidcJwtParseException
+    @Override public byte[] getSignedData(String token) throws OidcJwtParseException
     {
         try
         {

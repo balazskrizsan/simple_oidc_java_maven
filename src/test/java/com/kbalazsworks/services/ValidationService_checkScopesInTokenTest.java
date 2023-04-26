@@ -3,7 +3,7 @@ package com.kbalazsworks.services;
 import com.google.inject.Inject;
 import com.kbalazsworks.simple_oidc.entities.AccessTokenRawResponse;
 import com.kbalazsworks.simple_oidc.exceptions.OidcScopeException;
-import com.kbalazsworks.simple_oidc.services.ValidationService;
+import com.kbalazsworks.simple_oidc.services.IValidationService;
 import com.kbalazsworks.test_helpers.AbstractTest;
 import lombok.SneakyThrows;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ValidationService_checkScopesInTokenTest extends AbstractTest
 {
     @Inject
-    ValidationService validationService;
+    IValidationService validationService;
 
     @Test
     @SneakyThrows

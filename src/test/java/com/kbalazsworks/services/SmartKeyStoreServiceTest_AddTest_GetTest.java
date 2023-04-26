@@ -2,8 +2,8 @@ package com.kbalazsworks.services;
 
 import com.google.inject.Inject;
 import com.kbalazsworks.simple_oidc.entities.grant_type.ClientCredentials;
-import com.kbalazsworks.simple_oidc.services.GrantStoreService;
-import com.kbalazsworks.simple_oidc.services.SmartTokenStoreService;
+import com.kbalazsworks.simple_oidc.services.IGrantStoreService;
+import com.kbalazsworks.simple_oidc.services.ISmartTokenStoreService;
 import com.kbalazsworks.test_helpers.AbstractTest;
 import lombok.SneakyThrows;
 import org.junit.Test;
@@ -18,9 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class SmartKeyStoreServiceTest_AddTest_GetTest extends AbstractTest
 {
     @Inject
-    private SmartTokenStoreService smartTokenStoreService;
+    private ISmartTokenStoreService smartTokenStoreService;
     @Inject
-    private GrantStoreService      grantStoreService;
+    private IGrantStoreService      grantStoreService;
 
     @Test
     @SneakyThrows

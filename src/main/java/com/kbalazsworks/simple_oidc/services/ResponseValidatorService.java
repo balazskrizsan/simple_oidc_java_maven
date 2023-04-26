@@ -7,9 +7,9 @@ import com.kbalazsworks.simple_oidc.exceptions.OidcApiException;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class ResponseValidatorService
+public class ResponseValidatorService implements IResponseValidatorService
 {
-    public AccessTokenRawResponse tokenEndpointValidator(AccessTokenRawResponse response) throws OidcApiException
+    @Override public AccessTokenRawResponse tokenEndpointValidator(AccessTokenRawResponse response) throws OidcApiException
     {
         if (null == response.getAccessToken()
             || null == response.getExpiresIn()
@@ -24,7 +24,7 @@ public class ResponseValidatorService
         return response;
     }
 
-    public IntrospectRawResponse introspectEndpointValidator(IntrospectRawResponse response)
+    @Override public IntrospectRawResponse introspectEndpointValidator(IntrospectRawResponse response)
     throws OidcApiException
     {
         if (null == response.getActive())
@@ -38,7 +38,7 @@ public class ResponseValidatorService
         return response;
     }
 
-    public JwksKeys jwksEndpointValidator(JwksKeys response) throws OidcApiException
+    @Override public JwksKeys jwksEndpointValidator(JwksKeys response) throws OidcApiException
     {
         if (response.getKeys().isEmpty())
         {

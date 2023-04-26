@@ -2,7 +2,7 @@ package com.kbalazsworks.services;
 
 import com.google.inject.Inject;
 import com.kbalazsworks.simple_oidc.entities.grant_type.ClientCredentials;
-import com.kbalazsworks.simple_oidc.services.GrantStoreService;
+import com.kbalazsworks.simple_oidc.services.IGrantStoreService;
 import com.kbalazsworks.test_helpers.AbstractTest;
 import lombok.SneakyThrows;
 import org.junit.Test;
@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class GrantStoreService_protectStoreTest extends AbstractTest
 {
     @Inject
-    GrantStoreService grantStoreService;
+    IGrantStoreService grantStoreService;
 
     @Test
     @SneakyThrows

@@ -5,6 +5,7 @@ import com.kbalazsworks.simple_oidc.entities.grant_type.ClientCredentials;
 import com.kbalazsworks.simple_oidc.entities.grant_type.IGrantType;
 import com.kbalazsworks.simple_oidc.entities.grant_type.TokenExchange;
 import com.kbalazsworks.simple_oidc.services.GrantStoreService;
+import com.kbalazsworks.simple_oidc.services.IGrantStoreService;
 import com.kbalazsworks.test_helpers.AbstractTest;
 import lombok.SneakyThrows;
 import org.junit.Test;
@@ -17,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class GrantStoreService_addGrant_getGrantTest extends AbstractTest
 {
     @Inject
-    GrantStoreService grantStoreService;
+    IGrantStoreService grantStoreService;
 
     @SneakyThrows
     @Test

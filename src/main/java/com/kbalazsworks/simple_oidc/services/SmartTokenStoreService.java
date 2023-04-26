@@ -11,19 +11,19 @@ import java.util.Map;
 
 @RequiredArgsConstructor(onConstructor = @__({@Inject}))
 @Log4j2
-public class SmartTokenStoreService
+public class SmartTokenStoreService implements ISmartTokenStoreService
 {
-    private final ValidationService     validationService;
+    private final IValidationService    validationService;
     private final ICommunicationService communicationService;
 
     private Map<String, String> keyMap = new HashMap<>();
 
-    public void AddKey(String key, String token)
+    @Override public void AddKey(String key, String token)
     {
         keyMap.put(key, token);
     }
 
-    public String GetKey(String key) throws OidcSmartTokenStoreException
+    @Override public String GetKey(String key) throws OidcSmartTokenStoreException
     {
         String token = keyMap.get(key);
 

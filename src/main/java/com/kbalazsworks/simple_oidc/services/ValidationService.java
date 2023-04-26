@@ -11,6 +11,7 @@ import com.kbalazsworks.simple_oidc.exceptions.OidcKeyException;
 import com.kbalazsworks.simple_oidc.exceptions.OidcScopeException;
 import com.kbalazsworks.simple_oidc.factories.SystemFactory;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import java.security.InvalidKeyException;
@@ -22,15 +23,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor(onConstructor = @__({@Inject}))
 @Log4j2
 public class ValidationService implements IValidationService
 {
-    @Inject
-    private JwtValidationService jwtValidationService;
-    @Inject
-    private CommunicationService communicationService;
-    @Inject
-    private SystemFactory             systemFactory;
+    private final IJwtValidationService jwtValidationService;
+    private final CommunicationService  communicationService;
+    private final SystemFactory         systemFactory;
 
     /**
      * @param token  Allows JWT token
@@ -118,7 +117,7 @@ public class ValidationService implements IValidationService
         }
     }
 
-    public @NonNull Boolean isExpiredToken(@NonNull String token) throws OidcJwtParseException
+    public boolean isExpiredToken(@NonNull String token) throws OidcJwtParseException
     {
         Integer expiration = jwtValidationService.getJwtData(token).getExp();
         long    now        = systemFactory.getCurrentTimeMillis() / 1000;
@@ -160,7 +159,7 @@ public class ValidationService implements IValidationService
         }
     }
 
-    private @NonNull boolean checkJwksVerifiedTokenLogic(@NonNull String token)
+    private boolean checkJwksVerifiedTokenLogic(@NonNull String token)
     throws OidcApiException, OidcJwtParseException, OidcKeyException, OidcJwksException
     {
         String alg = jwtValidationService.getJwtHeader(token).alg;

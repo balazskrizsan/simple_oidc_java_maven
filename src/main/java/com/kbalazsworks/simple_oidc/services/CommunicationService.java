@@ -18,9 +18,9 @@ import java.util.Map;
 @RequiredArgsConstructor(onConstructor = @__({@Inject}))
 public class CommunicationService implements ICommunicationService
 {
-    private final ResponseValidatorService responseValidatorService;
-    private final GrantStoreService        grantStoreService;
-    private final HttpClientService        httpClientService;
+    private final IResponseValidatorService responseValidatorService;
+    private final IGrantStoreService        grantStoreService;
+    private final HttpClientService         httpClientService;
 
     public @NonNull AccessTokenRawResponse callTokenEndpoint(@NonNull String key) throws OidcApiException
     {

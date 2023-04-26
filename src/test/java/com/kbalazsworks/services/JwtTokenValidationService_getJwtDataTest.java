@@ -3,7 +3,7 @@ package com.kbalazsworks.services;
 import com.google.inject.Inject;
 import com.kbalazsworks.simple_oidc.entities.JwtData;
 import com.kbalazsworks.simple_oidc.exceptions.OidcJwtParseException;
-import com.kbalazsworks.simple_oidc.services.JwtValidationService;
+import com.kbalazsworks.simple_oidc.services.IJwtValidationService;
 import com.kbalazsworks.test_helpers.AbstractTest;
 import lombok.SneakyThrows;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class JwtTokenValidationService_getJwtDataTest extends AbstractTest
 {
     @Inject
-    JwtValidationService jwtValidationService;
+    IJwtValidationService jwtValidationService;
 
     @Test
     @SneakyThrows

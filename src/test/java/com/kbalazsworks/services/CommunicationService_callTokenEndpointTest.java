@@ -6,9 +6,9 @@ import com.kbalazsworks.simple_oidc.entities.IntrospectRawResponse;
 import com.kbalazsworks.simple_oidc.entities.JwtData;
 import com.kbalazsworks.simple_oidc.entities.JwtHeader;
 import com.kbalazsworks.simple_oidc.entities.grant_type.ClientCredentials;
-import com.kbalazsworks.simple_oidc.services.GrantStoreService;
 import com.kbalazsworks.simple_oidc.services.ICommunicationService;
-import com.kbalazsworks.simple_oidc.services.JwtValidationService;
+import com.kbalazsworks.simple_oidc.services.IGrantStoreService;
+import com.kbalazsworks.simple_oidc.services.IJwtValidationService;
 import com.kbalazsworks.test_helpers.AbstractTest;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -23,11 +23,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class CommunicationService_callTokenEndpointTest extends AbstractTest
 {
     @Inject
-    GrantStoreService     grantStoreService;
+    IGrantStoreService    grantStoreService;
     @Inject
     ICommunicationService communicationService;
     @Inject
-    JwtValidationService  jwtValidationService;
+    IJwtValidationService jwtValidationService;
 
     @Test
     @SneakyThrows

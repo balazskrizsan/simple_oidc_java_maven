@@ -8,7 +8,7 @@ import com.kbalazsworks.simple_oidc.entities.BasicAuth;
 import com.kbalazsworks.simple_oidc.entities.JwksKeyItem;
 import com.kbalazsworks.simple_oidc.entities.JwksKeys;
 import com.kbalazsworks.simple_oidc.services.CommunicationService;
-import com.kbalazsworks.simple_oidc.services.JwtValidationService;
+import com.kbalazsworks.simple_oidc.services.IJwtValidationService;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.junit.Before;
@@ -122,19 +122,23 @@ abstract public class AbstractTest
     {
         JwksKeyItem jwksKeyItem = getJwksKeyItem();
 
-        return injector.getInstance(JwtValidationService.class).getPublicKey(jwksKeyItem.getN(), jwksKeyItem.getE());
+        return injector.getInstance(IJwtValidationService.class).getPublicKey(jwksKeyItem.getN(), jwksKeyItem.getE());
     }
 
     @SneakyThrows
     public byte[] getValidSignature()
     {
-        return injector.getInstance(JwtValidationService.class).getSignature(requestJwtAccessTokenFromIds().getAccessToken());
+        return injector
+            .getInstance(IJwtValidationService.class)
+            .getSignature(requestJwtAccessTokenFromIds().getAccessToken());
     }
 
     @SneakyThrows
     public byte[] getValidSignedData()
     {
-        return injector.getInstance(JwtValidationService.class).getSignedData(requestJwtAccessTokenFromIds().getAccessToken());
+        return injector
+            .getInstance(IJwtValidationService.class)
+            .getSignedData(requestJwtAccessTokenFromIds().getAccessToken());
     }
 }
 
