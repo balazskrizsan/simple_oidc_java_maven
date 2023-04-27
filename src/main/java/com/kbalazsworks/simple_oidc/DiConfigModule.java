@@ -7,6 +7,7 @@ import com.kbalazsworks.simple_oidc.services.GrantStoreService;
 import com.kbalazsworks.simple_oidc.services.HttpClientService;
 import com.kbalazsworks.simple_oidc.services.ICommunicationService;
 import com.kbalazsworks.simple_oidc.services.IGrantStoreService;
+import com.kbalazsworks.simple_oidc.services.IJwtValidationService;
 import com.kbalazsworks.simple_oidc.services.IResponseValidatorService;
 import com.kbalazsworks.simple_oidc.services.ISmartTokenStoreService;
 import com.kbalazsworks.simple_oidc.services.IValidationService;
@@ -28,5 +29,6 @@ public class DiConfigModule extends AbstractModule
         bind(ICommunicationService.class).to(CommunicationService.class).asEagerSingleton();
         bind(HttpClientService.class).asEagerSingleton();
         bind(IResponseValidatorService.class).to(ResponseValidatorService.class).asEagerSingleton();
+        bind(IJwtValidationService.class).to(JwtValidationService.class).asEagerSingleton();
     }
 }
