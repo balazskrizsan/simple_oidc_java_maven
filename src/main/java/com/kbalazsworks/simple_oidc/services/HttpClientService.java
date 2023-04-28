@@ -6,6 +6,9 @@ import com.kbalazsworks.simple_oidc.factories.OkHttpFactory;
 
 public class HttpClientService
 {
+    public static String host             = "https://localhost:5001";
+    public static String discoverEndpoint = "/.well-known/openid-configuration";
+
     private OidcConfig            oidcConfig            = null;
     private OidcHttpClientService oidcHttpClientService = null;
 
@@ -13,9 +16,6 @@ public class HttpClientService
     {
         if (null == oidcHttpClientService || null == oidcConfig)
         {
-            final String host             = "http://localhost:91";
-            final String discoverEndpoint = "/.well-known/openid-configuration";
-
             boolean isHttps = host.contains("https");
 
             oidcHttpClientService = new OidcHttpClientService(isHttps, new OkHttpFactory());

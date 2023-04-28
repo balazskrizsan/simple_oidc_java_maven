@@ -8,6 +8,7 @@ import com.kbalazsworks.simple_oidc.entities.BasicAuth;
 import com.kbalazsworks.simple_oidc.entities.JwksKeyItem;
 import com.kbalazsworks.simple_oidc.entities.JwksKeys;
 import com.kbalazsworks.simple_oidc.services.CommunicationService;
+import com.kbalazsworks.simple_oidc.services.HttpClientService;
 import com.kbalazsworks.simple_oidc.services.IJwtValidationService;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
@@ -24,6 +25,7 @@ abstract public class AbstractTest
     @Before
     public void setup()
     {
+        HttpClientService.host = "http://localhost:91";
         injector.injectMembers(this);
     }
 
