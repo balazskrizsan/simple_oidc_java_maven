@@ -13,7 +13,7 @@ public class HttpClientService
     {
         if (null == oidcHttpClientService || null == oidcConfig)
         {
-            final String host             = "https://localhost:90";
+            final String host             = "http://localhost:91";
             final String discoverEndpoint = "/.well-known/openid-configuration";
 
             boolean isHttps = host.contains("https");
