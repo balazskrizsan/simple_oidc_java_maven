@@ -25,7 +25,7 @@ abstract public class AbstractTest
     @Before
     public void setup()
     {
-        HttpClientService.host = "http://localhost:91";
+        HttpClientService.host = "http://127.0.0.1:40010";
         injector.injectMembers(this);
     }
 
