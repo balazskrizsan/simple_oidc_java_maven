@@ -5,7 +5,7 @@ services:
     container_name: simple_oidc_ids6_e2e_test_app
     image: kbalazsworks/simple_oidc_ids6_e2e_test:master
     ports:
-      - "91:80"
+      - "40010:80"
     depends_on:
       - simple_oidc_ids6_e2e_test_postgres
     environment:
