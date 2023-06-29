@@ -49,7 +49,7 @@ public class CommunicationService implements ICommunicationService
             clientCredential.getClientSecret(),
             clientCredential.getScopeAsString(),
             clientCredential.getGrantType(),
-            new HashMap<>()
+            extraParams
         );
     }
 
