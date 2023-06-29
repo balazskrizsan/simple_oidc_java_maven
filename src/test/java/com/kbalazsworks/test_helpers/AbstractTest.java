@@ -16,7 +16,6 @@ import org.junit.Before;
 
 import java.security.PublicKey;
 
-
 @Log4j2
 abstract public class AbstractTest
 {
